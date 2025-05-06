@@ -1,0 +1,385 @@
+{% extends "base.html" %}
+
+{% block title %}Cardápio - Lanchonete{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card shadow h-100">
+            <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                <h6 class="m-0 font-weight-bold text-primary">Categorias</h6>
+                <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#novaCategoriaModal">
+                    <i class="bi bi-plus-circle me-1"></i> Nova Categoria
+                </button>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>Nome</th>
+                                <th>Produtos</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Lanches</td>
+                                <td>12</td>
+                                <td>
+                                    <button class="btn btn-sm btn-info">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-danger">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Porções</td>
+                                <td>8</td>
+                                <td>
+                                    <button class="btn btn-sm btn-info">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-danger">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Bebidas</td>
+                                <td>15</td>
+                                <td>
+                                    <button class="btn btn-sm btn-info">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-danger">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Sobremesas</td>
+                                <td>6</td>
+                                <td>
+                                    <button class="btn btn-sm btn-info">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-danger">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Combos</td>
+                                <td>4</td>
+                                <td>
+                                    <button class="btn btn-sm btn-info">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-danger">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card shadow h-100">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Importação de Cardápio</h6>
+            </div>
+            <div class="card-body">
+                <p>Importe seu cardápio de forma rápida e fácil.</p>
+                
+                <div class="mb-3">
+                    <label for="arquivoCardapio" class="form-label">Arquivo Excel ou CSV</label>
+                    <input class="form-control" type="file" id="arquivoCardapio">
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label">Modelo de Arquivo</label>
+                    <div>
+                        <a href="#" class="btn btn-outline-primary btn-sm">
+                            <i class="bi bi-download me-1"></i> Baixar Modelo
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="d-grid">
+                    <button class="btn btn-primary">
+                        <i class="bi bi-upload me-1"></i> Importar Cardápio
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3 d-flex justify-content-between align-items-center">
+        <h6 class="m-0 font-weight-bold text-primary">Produtos</h6>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#novoProdutoModal">
+            <i class="bi bi-plus-circle me-1"></i> Novo Produto
+        </button>
+    </div>
+    <div class="card-body">
+        <div class="row mb-3">
+            <div class="col-md-3">
+                <div class="input-group">
+                    <span class="input-group-text">Categoria</span>
+                    <select class="form-select" id="filtroCategoria">
+                        <option value="">Todas</option>
+                        <option value="lanches">Lanches</option>
+                        <option value="porcoes">Porções</option>
+                        <option value="bebidas">Bebidas</option>
+                        <option value="sobremesas">Sobremesas</option>
+                        <option value="combos">Combos</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="input-group">
+                    <span class="input-group-text">Buscar</span>
+                    <input type="text" class="form-control" placeholder="Nome do produto">
+                    <button class="btn btn-outline-secondary" type="button">
+                        <i class="bi bi-search"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="input-group">
+                    <span class="input-group-text">Status</span>
+                    <select class="form-select" id="filtroStatus">
+                        <option value="">Todos</option>
+                        <option value="ativo">Ativo</option>
+                        <option value="inativo">Inativo</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>Código</th>
+                        <th>Nome</th>
+                        <th>Categoria</th>
+                        <th>Preço</th>
+                        <th>Status</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>001</td>
+                        <td>X-Tudo</td>
+                        <td>Lanches</td>
+                        <td>R$ 25,00</td>
+                        <td><span class="badge bg-success">Ativo</span></td>
+                        <td>
+                            <button class="btn btn-sm btn-info">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                            <button class="btn btn-sm btn-warning">
+                                <i class="bi bi-eye-slash"></i>
+                            </button>
+                            <button class="btn btn-sm btn-danger">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>002</td>
+                        <td>X-Salada</td>
+                        <td>Lanches</td>
+                        <td>R$ 18,00</td>
+                        <td><span class="badge bg-success">Ativo</span></td>
+                        <td>
+                            <button class="btn btn-sm btn-info">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                            <button class="btn btn-sm btn-warning">
+                                <i class="bi bi-eye-slash"></i>
+                            </button>
+                            <button class="btn btn-sm btn-danger">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>003</td>
+                        <td>X-Bacon</td>
+                        <td>Lanches</td>
+                        <td>R$ 22,00</td>
+                        <td><span class="badge bg-success">Ativo</span></td>
+                        <td>
+                            <button class="btn btn-sm btn-info">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                            <button class="btn btn-sm btn-warning">
+                                <i class="bi bi-eye-slash"></i>
+                            </button>
+                            <button class="btn btn-sm btn-danger">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>004</td>
+                        <td>Batata Frita</td>
+                        <td>Porções</td>
+                        <td>R$ 12,00</td>
+                        <td><span class="badge bg-success">Ativo</span></td>
+                        <td>
+                            <button class="btn btn-sm btn-info">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                            <button class="btn btn-sm btn-warning">
+                                <i class="bi bi-eye-slash"></i>
+                            </button>
+                            <button class="btn btn-sm btn-danger">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>005</td>
+                        <td>Refrigerante</td>
+                        <td>Bebidas</td>
+                        <td>R$ 6,00</td>
+                        <td><span class="badge bg-success">Ativo</span></td>
+                        <td>
+                            <button class="btn btn-sm btn-info">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                            <button class="btn btn-sm btn-warning">
+                                <i class="bi bi-eye-slash"></i>
+                            </button>
+                            <button class="btn btn-sm btn-danger">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="d-flex justify-content-between align-items-center mt-3">
+            <div>
+                Mostrando 1 a 5 de 45 registros
+            </div>
+            <nav>
+                <ul class="pagination">
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" tabindex="-1">Anterior</a>
+                    </li>
+                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item">
+                        <a class="page-link" href="#">Próximo</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Nova Categoria -->
+<div class="modal fade" id="novaCategoriaModal" tabindex="-1" aria-labelledby="novaCategoriaModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="novaCategoriaModalLabel">Nova Categoria</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label for="nomeCategoria" class="form-label">Nome da Categoria</label>
+                        <input type="text" class="form-control" id="nomeCategoria" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="descricaoCategoria" class="form-label">Descrição</label>
+                        <textarea class="form-control" id="descricaoCategoria" rows="3"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary">Salvar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Novo Produto -->
+<div class="modal fade" id="novoProdutoModal" tabindex="-1" aria-labelledby="novoProdutoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="novoProdutoModalLabel">Novo Produto</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="nomeProduto" class="form-label">Nome do Produto</label>
+                            <input type="text" class="form-control" id="nomeProduto" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="categoriaProduto" class="form-label">Categoria</label>
+                            <select class="form-select" id="categoriaProduto" required>
+                                <option value="">Selecione uma categoria</option>
+                                <option value="1">Lanches</option>
+                                <option value="2">Porções</option>
+                                <option value="3">Bebidas</option>
+                                <option value="4">Sobremesas</option>
+                                <option value="5">Combos</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label for="codigoProduto" class="form-label">Código</label>
+                            <input type="text" class="form-control" id="codigoProduto">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="precoProduto" class="form-label">Preço (R$)</label>
+                            <input type="number" class="form-control" id="precoProduto" step="0.01" min="0" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="statusProduto" class="form-label">Status</label>
+                            <select class="form-select" id="statusProduto" required>
+                                <option value="ativo">Ativo</option>
+                                <option value="inativo">Inativo</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="descricaoProduto" class="form-label">Descrição</label>
+                        <textarea class="form-control" id="descricaoProduto" rows="3"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="imagemProduto" class="form-label">Imagem</label>
+                        <input class="form-control" type="file" id="imagemProduto">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary">Salvar</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
