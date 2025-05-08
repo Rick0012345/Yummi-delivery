@@ -9,20 +9,24 @@ class Cliente(models.Model):
     def __str__(self):
         return self.nome
 
-class CategoriaProduto(models.Model):
-    nome = models.CharField(max_length=50)
-    
-    def __str__(self):
-        return self.nome
+class Category(models.Model):
+    name = models.CharField(max_length=100)
+    description = models.TextField(blank=True, null=True)
 
-class Produto(models.Model):
-    nome = models.CharField(max_length=100)
-    descricao = models.TextField()
-    preco = models.DecimalField(max_digits=8, decimal_places=2)
-    categoria = models.ForeignKey(CategoriaProduto, on_delete=models.CASCADE)
-    
     def __str__(self):
-        return self.nome
+        return self.name
+
+class Product(models.Model):
+    name = models.CharField(max_length=100)
+    code = models.CharField(max_length=50, unique=True)
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    status = models.CharField(max_length=10, choices=[('ativo', 'Ativo'), ('inativo', 'Inativo')])
+    description = models.TextField(blank=True, null=True)
+    category = models.ForeignKey(Category, related_name='products', on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='products/', blank=True, null=True)  # Optional image field
+
+    def __str__(self):
+        return self.name
 
 class Pedido(models.Model):
     STATUS_CHOICES = (
@@ -43,7 +47,7 @@ class Pedido(models.Model):
 
 class ItemPedido(models.Model):
     pedido = models.ForeignKey(Pedido, on_delete=models.CASCADE, related_name='itens')
-    produto = models.ForeignKey(Produto, on_delete=models.CASCADE)
+    produto = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantidade = models.PositiveIntegerField(default=1)
     observacao = models.TextField(blank=True, null=True)
     
