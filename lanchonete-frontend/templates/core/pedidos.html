@@ -56,93 +56,127 @@
                     </tr>
                 </thead>
                 <tbody>
+                    {% for pedido in pedidos %}
                     <tr>
-                        <td>#1234</td>
-                        <td>João Silva</td>
-                        <td>05/06/2023 09:45</td>
-                        <td>3 itens</td>
-                        <td>R$ 45,90</td>
-                        <td><span class="badge bg-warning">Preparando</span></td>
+                        <td>#{{ pedido.id }}</td>
+                        <td>{{ pedido.cliente.nome }}</td>
+                        <td>{{ pedido.data_hora|date:'d/m/Y H:i' }}</td>
+                        <td>{{ pedido.itens.count }} itens</td>
+                        <td>R$ {{ pedido.total|floatformat:2 }}</td>
                         <td>
-                            <button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#verPedidoModal">
+                            {% if pedido.status == 'pendente' %}<span class="badge bg-secondary">Pendente</span>{% endif %}
+                            {% if pedido.status == 'preparando' %}<span class="badge bg-warning">Preparando</span>{% endif %}
+                            {% if pedido.status == 'pronto' %}<span class="badge bg-info">Pronto</span>{% endif %}
+                            {% if pedido.status == 'entregue' %}<span class="badge bg-success">Entregue</span>{% endif %}
+                            {% if pedido.status == 'cancelado' %}<span class="badge bg-danger">Cancelado</span>{% endif %}
+                        </td>
+                        <td>
+                            <button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#verPedidoModal{{ pedido.id }}">
                                 <i class="bi bi-eye"></i>
                             </button>
                             <button class="btn btn-sm btn-primary">
                                 <i class="bi bi-printer"></i>
                             </button>
-                            <button class="btn btn-sm btn-danger">
-                                <i class="bi bi-x-circle"></i>
-                            </button>
+                            <form method="post" action="" style="display:inline;">
+                                {% csrf_token %}
+                                <input type="hidden" name="cancelar_pedido_id" value="{{ pedido.id }}">
+                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Cancelar este pedido?');">
+                                    <i class="bi bi-x-circle"></i>
+                                </button>
+                            </form>
                         </td>
                     </tr>
-                    <tr>
-                        <td>#1233</td>
-                        <td>Maria Oliveira</td>
-                        <td>05/06/2023 09:30</td>
-                        <td>2 itens</td>
-                        <td>R$ 32,50</td>
-                        <td><span class="badge bg-success">Entregue</span></td>
-                        <td>
-                            <button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#verPedidoModal">
-                                <i class="bi bi-eye"></i>
-                            </button>
-                            <button class="btn btn-sm btn-primary">
-                                <i class="bi bi-printer"></i>
-                            </button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>#1232</td>
-                        <td>Pedro Santos</td>
-                        <td>05/06/2023 09:15</td>
-                        <td>4 itens</td>
-                        <td>R$ 78,00</td>
-                        <td><span class="badge bg-success">Entregue</span></td>
-                        <td>
-                            <button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#verPedidoModal">
-                                <i class="bi bi-eye"></i>
-                            </button>
-                            <button class="btn btn-sm btn-primary">
-                                <i class="bi bi-printer"></i>
-                            </button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>#1231</td>
-                        <td>Ana Costa</td>
-                        <td>05/06/2023 09:00</td>
-                        <td>1 item</td>
-                        <td>R$ 25,00</td>
-                        <td><span class="badge bg-success">Entregue</span></td>
-                        <td>
-                            <button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#verPedidoModal">
-                                <i class="bi bi-eye"></i>
-                            </button>
-                            <button class="btn btn-sm btn-primary">
-                                <i class="bi bi-printer"></i>
-                            </button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>#1230</td>
-                        <td>Carlos Ferreira</td>
-                        <td>05/06/2023 08:45</td>
-                        <td>3 itens</td>
-                        <td>R$ 52,80</td>
-                        <td><span class="badge bg-danger">Cancelado</span></td>
-                        <td>
-                            <button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#verPedidoModal">
-                                <i class="bi bi-eye"></i>
-                            </button>
-                        </td>
-                    </tr>
+                    <div class="modal fade" id="verPedidoModal{{ pedido.id }}" tabindex="-1" aria-labelledby="verPedidoModalLabel{{ pedido.id }}" aria-hidden="true">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="verPedidoModalLabel{{ pedido.id }}">Detalhes do Pedido #{{ pedido.id }}</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row mb-3">
+                                        <div class="col-md-6">
+                                            <h6>Informações do Pedido</h6>
+                                            <p><strong>Cliente:</strong> {{ pedido.cliente.nome }}</p>
+                                            <p><strong>Data/Hora:</strong> {{ pedido.data_hora|date:'d/m/Y H:i' }}</p>
+                                            <p><strong>Tipo:</strong> {{ pedido.get_tipo_entrega_display }}</p>
+                                            <p><strong>Status:</strong> <span class="badge bg-{{ pedido.status|yesno:'warning,success,info,secondary,danger' }}">{{ pedido.get_status_display }}</span></p>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <h6>Endereço de Entrega</h6>
+                                            <p>{{ pedido.cliente.endereco }}, {{ pedido.cliente.numero }}</p>
+                                            <p>Bairro: {{ pedido.cliente.bairro }}</p>
+                                            <p>Cidade: {{ pedido.cliente.cidade }} - {{ pedido.cliente.estado }}</p>
+                                            <p>Telefone: {{ pedido.cliente.telefone }}</p>
+                                        </div>
+                                    </div>
+                                    <h6 class="mt-4 mb-3">Itens do Pedido</h6>
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th>Produto</th>
+                                                    <th>Qtd</th>
+                                                    <th>Valor Unit.</th>
+                                                    <th>Subtotal</th>
+                                                    <th>Observação</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for item in pedido.itens.all %}
+                                                <tr>
+                                                    <td>{{ item.produto.name }}</td>
+                                                    <td>{{ item.quantidade }}</td>
+                                                    <td>R$ {{ item.valor_unitario|floatformat:2 }}</td>
+                                                    <td>R$ {{ item.subtotal|floatformat:2 }}</td>
+                                                    <td>{{ item.observacao }}</td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                            <tfoot>
+                                                <tr>
+                                                    <td colspan="3" class="text-end"><strong>Subtotal:</strong></td>
+                                                    <td colspan="2">R$ {{ pedido.total|floatformat:2 }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td colspan="3" class="text-end"><strong>Taxa de Entrega:</strong></td>
+                                                    <td colspan="2">R$ {{ pedido.taxa_entrega|floatformat:2 }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td colspan="3" class="text-end"><strong>Total:</strong></td>
+                                                    <td colspan="2"><strong>R$ {{ pedido.total|floatformat:2 }}</strong></td>
+                                                </tr>
+                                            </tfoot>
+                                        </table>
+                                    </div>
+                                    <div class="mt-3">
+                                        <h6>Observação do Pedido</h6>
+                                        <p>{{ pedido.observacao }}</p>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                                    <button type="button" class="btn btn-primary">
+                                        <i class="bi bi-printer me-1"></i> Imprimir
+                                    </button>
+                                    <button type="button" class="btn btn-success">
+                                        <i class="bi bi-check-circle me-1"></i> Atualizar Status
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    {% if pedidos|length == 0 %}
+                    <tr><td colspan="7">Nenhum pedido cadastrado.</td></tr>
+                    {% endif %}
                 </tbody>
             </table>
         </div>
         
         <div class="d-flex justify-content-between align-items-center mt-3">
             <div>
-                Mostrando 1 a 5 de 25 registros
+                Mostrando 1 a {{ pedidos|length }} de {{ pedidos|length }} registros
             </div>
             <nav>
                 <ul class="pagination">
@@ -170,38 +204,36 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form>
+                <form method="post" action="" enctype="multipart/form-data">
+                    {% csrf_token %}
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <label for="cliente" class="form-label">Cliente</label>
-                            <select class="form-select" id="cliente" required>
+                            <select class="form-select" id="cliente" name="cliente" required>
                                 <option value="">Selecione um cliente</option>
-                                <option value="1">João Silva</option>
-                                <option value="2">Maria Oliveira</option>
-                                <option value="3">Pedro Santos</option>
+                                {% for cliente in clientes %}
+                                <option value="{{ cliente.id }}">{{ cliente.nome }}</option>
+                                {% endfor %}
                             </select>
                         </div>
                         <div class="col-md-6">
                             <label for="tipoEntrega" class="form-label">Tipo de Entrega</label>
-                            <select class="form-select" id="tipoEntrega" required>
+                            <select class="form-select" id="tipoEntrega" name="tipoEntrega" required>
                                 <option value="balcao">Balcão</option>
                                 <option value="delivery">Delivery</option>
                                 <option value="mesa">Mesa</option>
                             </select>
                         </div>
                     </div>
-                    
                     <h6 class="mt-4 mb-3">Itens do Pedido</h6>
                     <div id="itensPedido">
                         <div class="row mb-3 item-pedido">
                             <div class="col-md-5">
                                 <select class="form-select" name="produto[]" required>
                                     <option value="">Selecione um produto</option>
-                                    <option value="1">X-Tudo - R$ 25,00</option>
-                                    <option value="2">X-Salada - R$ 18,00</option>
-                                    <option value="3">X-Bacon - R$ 22,00</option>
-                                    <option value="4">Batata Frita - R$ 12,00</option>
-                                    <option value="5">Refrigerante - R$ 6,00</option>
+                                    {% for produto in produtos %}
+                                    <option value="{{ produto.id }}">{{ produto.name }} - R$ {{ produto.price|floatformat:2 }}</option>
+                                    {% endfor %}
                                 </select>
                             </div>
                             <div class="col-md-2">
@@ -217,123 +249,22 @@
                             </div>
                         </div>
                     </div>
-                    
                     <div class="mb-3">
                         <button type="button" class="btn btn-success btn-sm" id="adicionarItem">
                             <i class="bi bi-plus-circle me-1"></i> Adicionar Item
                         </button>
                     </div>
-                    
                     <div class="row mb-3">
                         <div class="col-md-12">
                             <label for="observacaoPedido" class="form-label">Observação do Pedido</label>
-                            <textarea class="form-control" id="observacaoPedido" rows="2"></textarea>
+                            <textarea class="form-control" id="observacaoPedido" name="observacaoPedido" rows="2"></textarea>
                         </div>
                     </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Salvar Pedido</button>
+                    </div>
                 </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-primary">Salvar Pedido</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Modal Ver Pedido -->
-<div class="modal fade" id="verPedidoModal" tabindex="-1" aria-labelledby="verPedidoModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="verPedidoModalLabel">Detalhes do Pedido #1234</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <h6>Informações do Pedido</h6>
-                        <p><strong>Cliente:</strong> João Silva</p>
-                        <p><strong>Data/Hora:</strong> 05/06/2023 09:45</p>
-                        <p><strong>Tipo:</strong> Delivery</p>
-                        <p><strong>Status:</strong> <span class="badge bg-warning">Preparando</span></p>
-                    </div>
-                    <div class="col-md-6">
-                        <h6>Endereço de Entrega</h6>
-                        <p>Rua das Flores, 123</p>
-                        <p>Bairro: Centro</p>
-                        <p>Cidade: São Paulo - SP</p>
-                        <p>Telefone: (11) 98765-4321</p>
-                    </div>
-                </div>
-                
-                <h6 class="mt-4 mb-3">Itens do Pedido</h6>
-                <div class="table-responsive">
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th>Produto</th>
-                                <th>Qtd</th>
-                                <th>Valor Unit.</th>
-                                <th>Subtotal</th>
-                                <th>Observação</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>X-Tudo</td>
-                                <td>1</td>
-                                <td>R$ 25,00</td>
-                                <td>R$ 25,00</td>
-                                <td>Sem cebola</td>
-                            </tr>
-                            <tr>
-                                <td>Batata Frita</td>
-                                <td>1</td>
-                                <td>R$ 12,00</td>
-                                <td>R$ 12,00</td>
-                                <td>Porção grande</td>
-                            </tr>
-                            <tr>
-                                <td>Refrigerante</td>
-                                <td>1</td>
-                                <td>R$ 6,00</td>
-                                <td>R$ 6,00</td>
-                                <td>Coca-Cola</td>
-                            </tr>
-                        </tbody>
-                        <tfoot>
-                            <tr>
-                                <td colspan="3" class="text-end"><strong>Subtotal:</strong></td>
-                                <td>R$ 43,00</td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td colspan="3" class="text-end"><strong>Taxa de Entrega:</strong></td>
-                                <td>R$ 2,90</td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td colspan="3" class="text-end"><strong>Total:</strong></td>
-                                <td><strong>R$ 45,90</strong></td>
-                                <td></td>
-                            </tr>
-                        </tfoot>
-                    </table>
-                </div>
-                
-                <div class="mt-3">
-                    <h6>Observação do Pedido</h6>
-                    <p>Entregar o mais rápido possível. Cliente com pressa.</p>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-                <button type="button" class="btn btn-primary">
-                    <i class="bi bi-printer me-1"></i> Imprimir
-                </button>
-                <button type="button" class="btn btn-success">
-                    <i class="bi bi-check-circle me-1"></i> Atualizar Status
-                </button>
             </div>
         </div>
     </div>

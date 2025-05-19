@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from .models import Category, Product, Cliente
-from .serializers import CategorySerializer, ProductSerializer, ClienteSerializer
+from .models import Category, Product, Cliente, Pedido, PedidoItem
+from .serializers import CategorySerializer, ProductSerializer, ClienteSerializer, PedidoSerializer
 
 @login_required
 def index(request):
@@ -108,11 +108,53 @@ def dashboard(request):
 
 @login_required
 def pedidos(request):
-    context = {
+    if request.method == 'POST':
+        # Create new Pedido and its items
+        cliente_id = request.POST.get('cliente')
+        tipo_entrega = request.POST.get('tipoEntrega')
+        observacao = request.POST.get('observacaoPedido', '')
+        status = 'pendente'
+        taxa_entrega = 0
+        total = 0
+        cliente = get_object_or_404(Cliente, id=cliente_id)
+        pedido = Pedido.objects.create(
+            cliente=cliente,
+            tipo_entrega=tipo_entrega,
+            status=status,
+            observacao=observacao,
+            taxa_entrega=taxa_entrega,
+            total=0,
+        )
+        # Handle items
+        produtos = request.POST.getlist('produto[]')
+        quantidades = request.POST.getlist('quantidade[]')
+        observacoes = request.POST.getlist('observacao[]')
+        for i, produto_id in enumerate(produtos):
+            produto = get_object_or_404(Product, id=produto_id)
+            quantidade = int(quantidades[i])
+            obs = observacoes[i] if i < len(observacoes) else ''
+            valor_unitario = produto.price
+            PedidoItem.objects.create(
+                pedido=pedido,
+                produto=produto,
+                quantidade=quantidade,
+                valor_unitario=valor_unitario,
+                observacao=obs,
+            )
+            total += valor_unitario * quantidade
+        pedido.total = total
+        pedido.save()
+        return redirect('pedidos')
+    pedidos = Pedido.objects.select_related('cliente').prefetch_related('itens__produto').all().order_by('-data_hora')
+    clientes = Cliente.objects.all()
+    produtos = Product.objects.all()
+    return render(request, 'core/pedidos.html', {
+        'pedidos': pedidos,
+        'clientes': clientes,
+        'produtos': produtos,
         'title': 'Pedidos',
         'active': 'pedidos',
-    }
-    return render(request, 'core/pedidos.html', context)
+    })
 
 @login_required
 def cardapio(request):
