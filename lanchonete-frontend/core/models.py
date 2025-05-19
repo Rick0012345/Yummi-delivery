@@ -1,11 +1,19 @@
 from django.db import models
 
-# Modelos simplificados apenas para o frontend
 class Cliente(models.Model):
     nome = models.CharField(max_length=100)
     telefone = models.CharField(max_length=20)
-    endereco = models.TextField()
-    
+    endereco = models.CharField(max_length=255)
+    numero = models.CharField(max_length=10)
+    bairro = models.CharField(max_length=100)
+    cidade = models.CharField(max_length=100)
+    estado = models.CharField(max_length=2)
+    cep = models.CharField(max_length=15, blank=True)
+    complemento = models.CharField(max_length=100, blank=True)
+    observacoes = models.TextField(blank=True)
+    status = models.CharField(max_length=10, choices=[('ativo', 'Ativo'), ('inativo', 'Inativo')], default='ativo')
+    data_cadastro = models.DateField(auto_now_add=True)
+
     def __str__(self):
         return self.nome
 
