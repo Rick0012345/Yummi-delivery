@@ -40,108 +40,143 @@
                         <th>Nome</th>
                         <th>Telefone</th>
                         <th>Endereço</th>
-                        <th>Pedidos</th>
-                        <th>Último Pedido</th>
                         <th>Status</th>
                         <th>Ações</th>
                     </tr>
                 </thead>
                 <tbody>
+                    {% for cliente in clientes %}
                     <tr>
-                        <td>João Silva</td>
-                        <td>(11) 98765-4321</td>
-                        <td>Rua das Flores, 123 - Centro</td>
-                        <td>15</td>
-                        <td>05/06/2023</td>
-                        <td><span class="badge bg-success">Ativo</span></td>
+                        <td>{{ cliente.nome }}</td>
+                        <td>{{ cliente.telefone }}</td>
+                        <td>{{ cliente.endereco }}</td>
                         <td>
-                            <button class="btn btn-sm btn-info">
-                                <i class="bi bi-pencil"></i>
-                            </button>
-                            <button class="btn btn-sm btn-warning">
-                                <i class="bi bi-eye-slash"></i>
-                            </button>
-                            <button class="btn btn-sm btn-danger">
-                                <i class="bi bi-trash"></i>
-                            </button>
+                            {% if cliente.status == 'ativo' %}
+                                <span class="badge bg-success">Ativo</span>
+                            {% else %}
+                                <span class="badge bg-danger">Inativo</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <!-- Edit button triggers modal with cliente data -->
+                            <button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#editClienteModal{{ cliente.id }}"><i class="bi bi-pencil"></i></button>
+                            <!-- Delete button submits form -->
+                            <form method="post" action="" style="display:inline;">
+                                {% csrf_token %}
+                                <input type="hidden" name="delete_id" value="{{ cliente.id }}">
+                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Tem certeza que deseja excluir este cliente?');"><i class="bi bi-trash"></i></button>
+                            </form>
                         </td>
                     </tr>
-                    <tr>
-                        <td>Maria Oliveira</td>
-                        <td>(11) 98765-1234</td>
-                        <td>Av. Paulista, 1000 - Bela Vista</td>
-                        <td>8</td>
-                        <td>05/06/2023</td>
-                        <td><span class="badge bg-success">Ativo</span></td>
-                        <td>
-                            <button class="btn btn-sm btn-info">
-                                <i class="bi bi-pencil"></i>
-                            </button>
-                            <button class="btn btn-sm btn-warning">
-                                <i class="bi bi-eye-slash"></i>
-                            </button>
-                            <button class="btn btn-sm btn-danger">
-                                <i class="bi bi-trash"></i>
-                            </button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Pedro Santos</td>
-                        <td>(11) 97654-3210</td>
-                        <td>Rua Augusta, 500 - Consolação</td>
-                        <td>12</td>
-                        <td>05/06/2023</td>
-                        <td><span class="badge bg-success">Ativo</span></td>
-                        <td>
-                            <button class="btn btn-sm btn-info">
-                                <i class="bi bi-pencil"></i>
-                            </button>
-                            <button class="btn btn-sm btn-warning">
-                                <i class="bi bi-eye-slash"></i>
-                            </button>
-                            <button class="btn btn-sm btn-danger">
-                                <i class="bi bi-trash"></i>
-                            </button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Ana Costa</td>
-                        <td>(11) 91234-5678</td>
-                        <td>Rua Oscar Freire, 300 - Jardins</td>
-                        <td>5</td>
-                        <td>05/06/2023</td>
-                        <td><span class="badge bg-success">Ativo</span></td>
-                        <td>
-                            <button class="btn btn-sm btn-info">
-                                <i class="bi bi-pencil"></i>
-                            </button>
-                            <button class="btn btn-sm btn-warning">
-                                <i class="bi bi-eye-slash"></i>
-                            </button>
-                            <button class="btn btn-sm btn-danger">
-                                <i class="bi bi-trash"></i>
-                            </button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Carlos Ferreira</td>
-                        <td>(11) 99876-5432</td>
-                        <td>Av. Rebouças, 1500 - Pinheiros</td>
-                        <td>3</td>
-                        <td>05/06/2023</td>
-                        <td><span class="badge bg-danger">Inativo</span></td>
-                        <td>
-                            <button class="btn btn-sm btn-info">
-                                <i class="bi bi-pencil"></i>
-                            </button>
-                            <button class="btn btn-sm btn-success">
-                                <i class="bi bi-eye"></i>
-                            </button>
-                            <button class="btn btn-sm btn-danger">
-                                <i class="bi bi-trash"></i>
-                            </button>
-                        </td>
-                    </tr>
+                    <!-- Edit Modal for this cliente -->
+                    <div class="modal fade" id="editClienteModal{{ cliente.id }}" tabindex="-1" aria-labelledby="editClienteModalLabel{{ cliente.id }}" aria-hidden="true">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="editClienteModalLabel{{ cliente.id }}">Editar Cliente</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form method="post" action="" enctype="multipart/form-data">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="edit_id" value="{{ cliente.id }}">
+                                        <div class="row mb-3">
+                                            <div class="col-md-6">
+                                                <label class="form-label">Nome Completo</label>
+                                                <input type="text" class="form-control" name="nome" value="{{ cliente.nome }}" required>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label">Telefone</label>
+                                                <input type="tel" class="form-control" name="telefone" value="{{ cliente.telefone }}" required>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <div class="col-md-8">
+                                                <label class="form-label">Endereço</label>
+                                                <input type="text" class="form-control" name="endereco" value="{{ cliente.endereco }}" required>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label class="form-label">Número</label>
+                                                <input type="text" class="form-control" name="numero" value="{{ cliente.numero }}" required>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <div class="col-md-6">
+                                                <label class="form-label">Bairro</label>
+                                                <input type="text" class="form-control" name="bairro" value="{{ cliente.bairro }}" required>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label">Cidade</label>
+                                                <input type="text" class="form-control" name="cidade" value="{{ cliente.cidade }}" required>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <div class="col-md-4">
+                                                <label class="form-label">Estado</label>
+                                                <select class="form-select" name="estado" required>
+                                                    <option value="">Selecione</option>
+                                                    <option value="AC" {% if cliente.estado == 'AC' %}selected{% endif %}>AC</option>
+                                                    <option value="AL" {% if cliente.estado == 'AL' %}selected{% endif %}>AL</option>
+                                                    <option value="AP" {% if cliente.estado == 'AP' %}selected{% endif %}>AP</option>
+                                                    <option value="AM" {% if cliente.estado == 'AM' %}selected{% endif %}>AM</option>
+                                                    <option value="BA" {% if cliente.estado == 'BA' %}selected{% endif %}>BA</option>
+                                                    <option value="CE" {% if cliente.estado == 'CE' %}selected{% endif %}>CE</option>
+                                                    <option value="DF" {% if cliente.estado == 'DF' %}selected{% endif %}>DF</option>
+                                                    <option value="ES" {% if cliente.estado == 'ES' %}selected{% endif %}>ES</option>
+                                                    <option value="GO" {% if cliente.estado == 'GO' %}selected{% endif %}>GO</option>
+                                                    <option value="MA" {% if cliente.estado == 'MA' %}selected{% endif %}>MA</option>
+                                                    <option value="MT" {% if cliente.estado == 'MT' %}selected{% endif %}>MT</option>
+                                                    <option value="MS" {% if cliente.estado == 'MS' %}selected{% endif %}>MS</option>
+                                                    <option value="MG" {% if cliente.estado == 'MG' %}selected{% endif %}>MG</option>
+                                                    <option value="PA" {% if cliente.estado == 'PA' %}selected{% endif %}>PA</option>
+                                                    <option value="PB" {% if cliente.estado == 'PB' %}selected{% endif %}>PB</option>
+                                                    <option value="PR" {% if cliente.estado == 'PR' %}selected{% endif %}>PR</option>
+                                                    <option value="PE" {% if cliente.estado == 'PE' %}selected{% endif %}>PE</option>
+                                                    <option value="PI" {% if cliente.estado == 'PI' %}selected{% endif %}>PI</option>
+                                                    <option value="RJ" {% if cliente.estado == 'RJ' %}selected{% endif %}>RJ</option>
+                                                    <option value="RN" {% if cliente.estado == 'RN' %}selected{% endif %}>RN</option>
+                                                    <option value="RS" {% if cliente.estado == 'RS' %}selected{% endif %}>RS</option>
+                                                    <option value="RO" {% if cliente.estado == 'RO' %}selected{% endif %}>RO</option>
+                                                    <option value="RR" {% if cliente.estado == 'RR' %}selected{% endif %}>RR</option>
+                                                    <option value="SC" {% if cliente.estado == 'SC' %}selected{% endif %}>SC</option>
+                                                    <option value="SP" {% if cliente.estado == 'SP' %}selected{% endif %}>SP</option>
+                                                    <option value="SE" {% if cliente.estado == 'SE' %}selected{% endif %}>SE</option>
+                                                    <option value="TO" {% if cliente.estado == 'TO' %}selected{% endif %}>TO</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label class="form-label">CEP</label>
+                                                <input type="text" class="form-control" name="cep" value="{{ cliente.cep }}">
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label class="form-label">Complemento</label>
+                                                <input type="text" class="form-control" name="complemento" value="{{ cliente.complemento }}">
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Observações</label>
+                                            <textarea class="form-control" name="observacoes" rows="2">{{ cliente.observacoes }}</textarea>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Status</label>
+                                            <select class="form-select" name="status">
+                                                <option value="ativo" {% if cliente.status == 'ativo' %}selected{% endif %}>Ativo</option>
+                                                <option value="inativo" {% if cliente.status == 'inativo' %}selected{% endif %}>Inativo</option>
+                                            </select>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                            <button type="submit" class="btn btn-primary">Salvar</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    {% if clientes|length == 0 %}
+                    <tr><td colspan="5">Nenhum cliente cadastrado.</td></tr>
+                    {% endif %}
                 </tbody>
             </table>
         </div>
@@ -213,7 +248,7 @@
                                     <div class="col mr-2">
                                         <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
                                             Total de Clientes</div>
-                                        <div class="h5 mb-0 font-weight-bold text-gray-800">50</div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800" id="total-clientes">0</div>
                                     </div>
                                     <div class="col-auto">
                                         <i class="bi bi-people fa-2x text-gray-300"></i>
@@ -230,7 +265,7 @@
                                     <div class="col mr-2">
                                         <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
                                             Clientes Ativos</div>
-                                        <div class="h5 mb-0 font-weight-bold text-gray-800">45</div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800" id="ativos-clientes">0</div>
                                     </div>
                                     <div class="col-auto">
                                         <i class="bi bi-person-check fa-2x text-gray-300"></i>
@@ -258,41 +293,42 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form>
+                <form method="post" action="" enctype="multipart/form-data">
+                    {% csrf_token %}
                     <div class="row mb-3">
                         <div class="col-md-6">
-                            <label for="nomeCliente" class="form-label">Nome Completo</label>
-                            <input type="text" class="form-control" id="nomeCliente" required>
+                            <label for="id_nome" class="form-label">Nome Completo</label>
+                            <input type="text" class="form-control" id="id_nome" name="nome" required>
                         </div>
                         <div class="col-md-6">
-                            <label for="telefoneCliente" class="form-label">Telefone</label>
-                            <input type="tel" class="form-control" id="telefoneCliente" required>
+                            <label for="id_telefone" class="form-label">Telefone</label>
+                            <input type="tel" class="form-control" id="id_telefone" name="telefone" required>
                         </div>
                     </div>
                     <div class="row mb-3">
                         <div class="col-md-8">
-                            <label for="enderecoCliente" class="form-label">Endereço</label>
-                            <input type="text" class="form-control" id="enderecoCliente" required>
+                            <label for="id_endereco" class="form-label">Endereço</label>
+                            <input type="text" class="form-control" id="id_endereco" name="endereco" required>
                         </div>
                         <div class="col-md-4">
-                            <label for="numeroCliente" class="form-label">Número</label>
-                            <input type="text" class="form-control" id="numeroCliente" required>
+                            <label for="id_numero" class="form-label">Número</label>
+                            <input type="text" class="form-control" id="id_numero" name="numero" required>
                         </div>
                     </div>
                     <div class="row mb-3">
                         <div class="col-md-6">
-                            <label for="bairroCliente" class="form-label">Bairro</label>
-                            <input type="text" class="form-control" id="bairroCliente" required>
+                            <label for="id_bairro" class="form-label">Bairro</label>
+                            <input type="text" class="form-control" id="id_bairro" name="bairro" required>
                         </div>
                         <div class="col-md-6">
-                            <label for="cidadeCliente" class="form-label">Cidade</label>
-                            <input type="text" class="form-control" id="cidadeCliente" required>
+                            <label for="id_cidade" class="form-label">Cidade</label>
+                            <input type="text" class="form-control" id="id_cidade" name="cidade" required>
                         </div>
                     </div>
                     <div class="row mb-3">
                         <div class="col-md-4">
-                            <label for="estadoCliente" class="form-label">Estado</label>
-                            <select class="form-select" id="estadoCliente" required>
+                            <label for="id_estado" class="form-label">Estado</label>
+                            <select class="form-select" id="id_estado" name="estado" required>
                                 <option value="">Selecione</option>
                                 <option value="AC">AC</option>
                                 <option value="AL">AL</option>
@@ -324,23 +360,30 @@
                             </select>
                         </div>
                         <div class="col-md-4">
-                            <label for="cepCliente" class="form-label">CEP</label>
-                            <input type="text" class="form-control" id="cepCliente">
+                            <label for="id_cep" class="form-label">CEP</label>
+                            <input type="text" class="form-control" id="id_cep" name="cep">
                         </div>
                         <div class="col-md-4">
-                            <label for="complementoCliente" class="form-label">Complemento</label>
-                            <input type="text" class="form-control" id="complementoCliente">
+                            <label for="id_complemento" class="form-label">Complemento</label>
+                            <input type="text" class="form-control" id="id_complemento" name="complemento">
                         </div>
                     </div>
                     <div class="mb-3">
-                        <label for="observacoesCliente" class="form-label">Observações</label>
-                        <textarea class="form-control" id="observacoesCliente" rows="2"></textarea>
+                        <label for="id_observacoes" class="form-label">Observações</label>
+                        <textarea class="form-control" id="id_observacoes" name="observacoes" rows="2"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="id_status" class="form-label">Status</label>
+                        <select class="form-select" id="id_status" name="status">
+                            <option value="ativo" selected>Ativo</option>
+                            <option value="inativo">Inativo</option>
+                        </select>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Salvar</button>
                     </div>
                 </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-primary">Salvar</button>
             </div>
         </div>
     </div>
@@ -349,29 +392,46 @@
 
 {% block extra_js %}
 <script>
-    // Gráfico de Clientes
-    var ctx = document.getElementById('clientesChart').getContext('2d');
-    var clientesChart = new Chart(ctx, {
-        type: 'doughnut',
-        data: {
-            labels: ['Clientes Ativos', 'Clientes Inativos', 'Novos Clientes (Mês)'],
-            datasets: [{
-                data: [45, 5, 18],
-                backgroundColor: [
-                    '#1cc88a',
-                    '#e74a3b',
-                    '#4e73df'
-                ]
-            }]
-        },
-        options: {
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    position: 'bottom'
+    // Gráfico de Clientes dinâmico
+    fetch('/api/clientes/')
+        .then(response => response.json())
+        .then(data => {
+            let total = data.length;
+            let ativos = data.filter(c => c.status === 'ativo').length;
+            let inativos = data.filter(c => c.status === 'inativo').length;
+            // Novos Clientes (Mês): exemplo simples, ajuste conforme seu modelo
+            let now = new Date();
+            let novos = data.filter(c => {
+                if (!c.created_at) return false;
+                let created = new Date(c.created_at);
+                return created.getMonth() === now.getMonth() && created.getFullYear() === now.getFullYear();
+            }).length;
+            // Atualiza os cards de estatísticas
+            document.getElementById('total-clientes').textContent = total;
+            document.getElementById('ativos-clientes').textContent = ativos;
+            var ctx = document.getElementById('clientesChart').getContext('2d');
+            var clientesChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Clientes Ativos', 'Clientes Inativos', 'Novos Clientes (Mês)'],
+                    datasets: [{
+                        data: [ativos, inativos, novos],
+                        backgroundColor: [
+                            '#1cc88a',
+                            '#e74a3b',
+                            '#4e73df'
+                        ]
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
                 }
-            }
-        }
-    });
+            });
+        });
 </script>
 {% endblock %}
