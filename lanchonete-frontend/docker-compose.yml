@@ -1,13 +1,18 @@
-version: '3.8'
-
 services:
   web:
     build: .
-    command: python manage.py runserver 0.0.0.0:8000
+    container_name: lachonete
+    hostname: lanchonete
     volumes:
       - .:/app
     ports:
-      - "8000:8000"
+      - "9999:9999"
     environment:
-      - DEBUG=1
+      - DJANGO_DEBUG=1
       - DJANGO_SETTINGS_MODULE=lanchonete.settings 
+
+# Usado em produção
+networks:
+  default:
+    name: $DOCKER_NETWORK
+    external: true
