@@ -10,9 +10,3 @@ services:
     environment:
       - DJANGO_DEBUG=1
       - DJANGO_SETTINGS_MODULE=lanchonete.settings 
-
-# Usado em produção
-networks:
-  default:
-    name: $DOCKER_NETWORK
-    external: true
