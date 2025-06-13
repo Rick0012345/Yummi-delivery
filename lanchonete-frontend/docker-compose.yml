@@ -1,7 +1,7 @@
 services:
   web:
     build: .
-    container_name: lachonete
+    container_name: lanchonete # lachonete
     hostname: lanchonete
     volumes:
       - .:/app
