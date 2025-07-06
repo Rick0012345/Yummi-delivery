@@ -1,13 +1,16 @@
-version: '3.8'
-
 services:
   web:
     build: .
-    command: python manage.py runserver 0.0.0.0:8000
+    container_name: lanchonete # lachonete
+    hostname: lanchonete
     volumes:
       - .:/app
     ports:
-      - "8000:8000"
+      - "9999:9999"
     environment:
-      - DEBUG=1
+      - DJANGO_SECRET_KEY=chave-super-secreta
+      - DJANGO_DEBUG=1
       - DJANGO_SETTINGS_MODULE=lanchonete.settings 
+      - DJANGO_ALLOWED_HOSTS=0.0.0.0,localhost,127.0.0.1
+      - DJANGO_CSRF_ORIGINS=http://localhost,http://127.0.0.1
+      - DJANGO_CORS_ORIGINS=http://localhost,http://127.0.0.1
