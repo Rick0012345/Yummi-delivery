@@ -4,7 +4,7 @@ FROM python:3.12-slim
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
-# Instalar dependências do sistema.
+# Instalar dependências do sistema
 RUN apt-get update \
     && apt-get install -y python3-dev postgresql-client libpq-dev build-essential pkg-config \
     && rm -rf /var/lib/apt/lists/*
@@ -18,18 +18,14 @@ COPY requirements.txt .
 RUN pip install --upgrade pip && \ 
     pip install --no-cache-dir -r requirements.txt
 
-# Copiar os arquivos e o entrypoint junto.
+# Copiar os arquivos do projeto
 COPY . /usr/src/app/
 
-# Configurar permissões para o entrypoint.sh.
-# Nesse ponto, só faço isso por costume.
-RUN chmod +x /usr/src/app/entrypoint.sh
-
-# Coletar arquivos estáticos (recomendo whitenoise para lidar com eles)
+# Coletar arquivos estáticos 
 RUN python manage.py collectstatic --noinput
 
-# Rodar o entrypoint.sh.
-ENTRYPOINT ["/usr/src/app/entrypoint.sh"]
+# Expor a porta
+EXPOSE 8000
 
-# CMD foi removido. Será utilizado o entrypoint.sh.
-EXPOSE 9999
+# Inicialização rápida - sem limpeza automática de cache
+CMD ["sh", "-c", "python manage.py migrate --noinput && echo 'Iniciando servidor Gunicorn na porta 8000...' && gunicorn lanchonete.wsgi:application --bind 0.0.0.0:8000 --workers 3 --timeout 60"]

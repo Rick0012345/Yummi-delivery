@@ -1,8 +1,10 @@
 services:
   web:
-    build: .
-    container_name: lanchonete # lachonete
-    hostname: lanchonete
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: lanchonete-dev
+    hostname: lanchonete-dev
     volumes:
       - .:/usr/src/app
     ports:
@@ -13,4 +15,4 @@ services:
       - DJANGO_SETTINGS_MODULE=lanchonete.settings 
       - DJANGO_ALLOWED_HOSTS=0.0.0.0,localhost,127.0.0.1
       - DJANGO_CSRF_ORIGINS=http://localhost,http://127.0.0.1
-      - DJANGO_CORS_ORIGINS=http://localhost,http://127.0.0.1
+      - DJANGO_CORS_ORIGINS=http://localhost,http://127.0.0.1 
