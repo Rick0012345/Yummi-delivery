@@ -20,7 +20,30 @@
                     <div class="text-center mb-4">
                         <img src="{% static 'img/logo.png' %}" alt="Logo" class="img-fluid" style="max-width: 150px;">
                     </div>
+                    
+                    <!-- Lanchonete Ativa -->
+                    {% if request.session.lanchonete_nome %}
+                    <div class="px-3 mb-3">
+                        <div class="alert alert-info py-2 mb-0">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <div>
+                                    <small class="text-muted d-block">Lanchonete Ativa:</small>
+                                    <strong class="small">{{ request.session.lanchonete_nome }}</strong>
+                                </div>
+                                <a href="{% url 'minhas_lanchonetes' %}" class="btn btn-sm btn-outline-info" title="Trocar lanchonete">
+                                    <i class="bi bi-arrow-repeat"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
                     <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link {% if active == 'lanchonetes' %}active{% endif %}" href="{% url 'minhas_lanchonetes' %}">
+                                <i class="bi bi-shop me-2"></i> Lanchonetes
+                            </a>
+                        </li>
                         <li class="nav-item">
                             <a class="nav-link {% if active == 'dashboard' %}active{% endif %}" href="{% url 'dashboard' %}">
                                 <i class="bi bi-speedometer2 me-2"></i> Dashboard
@@ -71,6 +94,7 @@
                                 <i class="bi bi-person-circle me-1"></i> {{ user.username }}
                             </button>
                             <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="{% url 'minhas_lanchonetes' %}">Minhas Lanchonetes</a></li>
                                 <li><a class="dropdown-item" href="{% url 'configuracoes' %}">Configurações</a></li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item" href="{% url 'logout' %}">Sair</a></li>

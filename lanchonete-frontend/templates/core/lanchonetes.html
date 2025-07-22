@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+
+{% block title %}Minhas Lanchonetes{% endblock %}
+
+{% block content %}
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Minhas Lanchonetes</h1>
+    <a href="{% url 'cadastrar_lanchonete' %}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+        <i class="bi bi-plus-circle fa-sm text-white-50"></i> Nova Lanchonete
+    </a>
+</div>
+
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    {% endfor %}
+{% endif %}
+
+{% if lanchonete_ativa %}
+<div class="alert alert-info" role="alert">
+    <strong>Lanchonete ativa:</strong> {{ lanchonete_ativa.nome }}
+    <small class="text-muted">({{ lanchonete_ativa.cidade }})</small>
+</div>
+{% endif %}
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Lanchonetes Disponíveis</h6>
+    </div>
+    <div class="card-body">
+        {% if lanchonetes %}
+            <div class="row">
+                {% for lanchonete in lanchonetes %}
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="card h-100 {% if lanchonete_ativa and lanchonete.id == lanchonete_ativa.id %}border-primary{% endif %}">
+                        {% if lanchonete.logo %}
+                        <img src="{{ lanchonete.logo.url }}" class="card-img-top" style="height: 200px; object-fit: cover;" alt="{{ lanchonete.nome }}">
+                        {% else %}
+                        <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                            <i class="bi bi-shop" style="font-size: 3rem; color: #6c757d;"></i>
+                        </div>
+                        {% endif %}
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">{{ lanchonete.nome }}</h5>
+                            <p class="card-text">
+                                <small class="text-muted">
+                                    <i class="bi bi-geo-alt"></i> {{ lanchonete.cidade }}, {{ lanchonete.estado }}<br>
+                                    <i class="bi bi-telephone"></i> {{ lanchonete.telefone }}<br>
+                                    <i class="bi bi-envelope"></i> {{ lanchonete.email }}
+                                </small>
+                            </p>
+                            <div class="mt-auto">
+                                {% if lanchonete_ativa and lanchonete.id == lanchonete_ativa.id %}
+                                    <span class="badge badge-primary mb-2">Ativa</span>
+                                {% else %}
+                                    <a href="{% url 'selecionar_lanchonete' lanchonete.id %}" class="btn btn-primary btn-sm mb-2">
+                                        <i class="bi bi-check-circle"></i> Selecionar
+                                    </a>
+                                {% endif %}
+                                
+                                {% if lanchonete.proprietario == user %}
+                                <div class="btn-group w-100" role="group">
+                                    <a href="{% url 'editar_lanchonete' lanchonete.id %}" class="btn btn-outline-secondary btn-sm">
+                                        <i class="bi bi-pencil"></i> Editar
+                                    </a>
+                                    <button type="button" class="btn btn-outline-info btn-sm" data-toggle="modal" data-target="#detailModal{{ lanchonete.id }}">
+                                        <i class="bi bi-eye"></i> Detalhes
+                                    </button>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal de Detalhes -->
+                <div class="modal fade" id="detailModal{{ lanchonete.id }}" tabindex="-1" role="dialog">
+                    <div class="modal-dialog modal-lg" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">{{ lanchonete.nome }}</h5>
+                                <button type="button" class="close" data-dismiss="modal">
+                                    <span>&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h6>Informações Básicas</h6>
+                                        <p><strong>CNPJ:</strong> {{ lanchonete.cnpj }}</p>
+                                        <p><strong>Telefone:</strong> {{ lanchonete.telefone }}</p>
+                                        <p><strong>Email:</strong> {{ lanchonete.email }}</p>
+                                        <p><strong>Endereço:</strong> {{ lanchonete.endereco }}, {{ lanchonete.numero }}</p>
+                                        <p><strong>Bairro:</strong> {{ lanchonete.bairro }}</p>
+                                        <p><strong>Cidade:</strong> {{ lanchonete.cidade }}/{{ lanchonete.estado }}</p>
+                                        <p><strong>CEP:</strong> {{ lanchonete.cep }}</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h6>Configurações</h6>
+                                        <p><strong>Taxa de Entrega:</strong> R$ {{ lanchonete.taxa_entrega }}</p>
+                                        <p><strong>Tempo Estimado:</strong> {{ lanchonete.tempo_estimado }} min</p>
+                                        <p><strong>Raio de Entrega:</strong> {{ lanchonete.raio_entrega }} km</p>
+                                        <p><strong>Funcionamento:</strong> {{ lanchonete.dias_funcionamento }}</p>
+                                        <p><strong>Horário:</strong> {{ lanchonete.horario_abertura }} às {{ lanchonete.horario_fechamento }}</p>
+                                        
+                                        <h6 class="mt-3">Pagamentos Aceitos</h6>
+                                        <div class="d-flex flex-wrap">
+                                            {% if lanchonete.dinheiro %}<span class="badge badge-success mr-1">Dinheiro</span>{% endif %}
+                                            {% if lanchonete.cartao_credito %}<span class="badge badge-success mr-1">Cartão Crédito</span>{% endif %}
+                                            {% if lanchonete.cartao_debito %}<span class="badge badge-success mr-1">Cartão Débito</span>{% endif %}
+                                            {% if lanchonete.pix %}<span class="badge badge-success mr-1">PIX</span>{% endif %}
+                                            {% if lanchonete.vale_refeicao %}<span class="badge badge-success mr-1">Vale Refeição</span>{% endif %}
+                                        </div>
+                                        {% if lanchonete.chave_pix %}
+                                        <p class="mt-2"><strong>Chave PIX:</strong> {{ lanchonete.chave_pix }}</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="text-center py-5">
+                <i class="bi bi-shop" style="font-size: 4rem; color: #6c757d;"></i>
+                <h4 class="mt-3 text-muted">Nenhuma lanchonete encontrada</h4>
+                <p class="text-muted">Cadastre sua primeira lanchonete para começar a usar o sistema.</p>
+                <a href="{% url 'cadastrar_lanchonete' %}" class="btn btn-primary">
+                    <i class="bi bi-plus-circle"></i> Cadastrar Primeira Lanchonete
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %} 

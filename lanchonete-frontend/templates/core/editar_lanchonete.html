@@ -1,0 +1,321 @@
+{% extends "base.html" %}
+
+{% block title %}Editar Lanchonete{% endblock %}
+
+{% block content %}
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Editar Lanchonete</h1>
+    <a href="{% url 'minhas_lanchonetes' %}" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm">
+        <i class="bi bi-arrow-left fa-sm text-white-50"></i> Voltar
+    </a>
+</div>
+
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    {% endfor %}
+{% endif %}
+
+<div class="card shadow mb-4">
+    <div class="card-body">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <!-- Informações Básicas -->
+            <div class="row">
+                <div class="col-md-12">
+                    <h5 class="mb-3 text-primary">Informações Básicas</h5>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="nome">Nome da Lanchonete <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="nome" name="nome" value="{{ lanchonete.nome }}" required>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="cnpj">CNPJ <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="cnpj" name="cnpj" value="{{ lanchonete.cnpj }}" required>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="telefone">Telefone <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="telefone" name="telefone" value="{{ lanchonete.telefone }}" required>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="email">Email <span class="text-danger">*</span></label>
+                        <input type="email" class="form-control" id="email" name="email" value="{{ lanchonete.email }}" required>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="logo">Logo da Lanchonete</label>
+                        {% if lanchonete.logo %}
+                        <div class="mb-2">
+                            <img src="{{ lanchonete.logo.url }}" class="img-thumbnail" style="max-height: 100px;" alt="Logo atual">
+                            <small class="text-muted d-block">Logo atual</small>
+                        </div>
+                        {% endif %}
+                        <input type="file" class="form-control-file" id="logo" name="logo" accept="image/*">
+                        <small class="form-text text-muted">Formatos aceitos: JPG, PNG, GIF (máx. 5MB). Deixe em branco para manter o logo atual.</small>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Endereço -->
+            <div class="row mt-4">
+                <div class="col-md-12">
+                    <h5 class="mb-3 text-primary">Endereço</h5>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="form-group">
+                        <label for="endereco">Endereço <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="endereco" name="endereco" value="{{ lanchonete.endereco }}" required>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="numero">Número <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="numero" name="numero" value="{{ lanchonete.numero }}" required>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="bairro">Bairro <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="bairro" name="bairro" value="{{ lanchonete.bairro }}" required>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="cidade">Cidade <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="cidade" name="cidade" value="{{ lanchonete.cidade }}" required>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label for="estado">Estado <span class="text-danger">*</span></label>
+                        <select class="form-control" id="estado" name="estado" required>
+                            <option value="">Selecione</option>
+                            <option value="AC" {% if lanchonete.estado == "AC" %}selected{% endif %}>AC</option>
+                            <option value="AL" {% if lanchonete.estado == "AL" %}selected{% endif %}>AL</option>
+                            <option value="AP" {% if lanchonete.estado == "AP" %}selected{% endif %}>AP</option>
+                            <option value="AM" {% if lanchonete.estado == "AM" %}selected{% endif %}>AM</option>
+                            <option value="BA" {% if lanchonete.estado == "BA" %}selected{% endif %}>BA</option>
+                            <option value="CE" {% if lanchonete.estado == "CE" %}selected{% endif %}>CE</option>
+                            <option value="DF" {% if lanchonete.estado == "DF" %}selected{% endif %}>DF</option>
+                            <option value="ES" {% if lanchonete.estado == "ES" %}selected{% endif %}>ES</option>
+                            <option value="GO" {% if lanchonete.estado == "GO" %}selected{% endif %}>GO</option>
+                            <option value="MA" {% if lanchonete.estado == "MA" %}selected{% endif %}>MA</option>
+                            <option value="MT" {% if lanchonete.estado == "MT" %}selected{% endif %}>MT</option>
+                            <option value="MS" {% if lanchonete.estado == "MS" %}selected{% endif %}>MS</option>
+                            <option value="MG" {% if lanchonete.estado == "MG" %}selected{% endif %}>MG</option>
+                            <option value="PA" {% if lanchonete.estado == "PA" %}selected{% endif %}>PA</option>
+                            <option value="PB" {% if lanchonete.estado == "PB" %}selected{% endif %}>PB</option>
+                            <option value="PR" {% if lanchonete.estado == "PR" %}selected{% endif %}>PR</option>
+                            <option value="PE" {% if lanchonete.estado == "PE" %}selected{% endif %}>PE</option>
+                            <option value="PI" {% if lanchonete.estado == "PI" %}selected{% endif %}>PI</option>
+                            <option value="RJ" {% if lanchonete.estado == "RJ" %}selected{% endif %}>RJ</option>
+                            <option value="RN" {% if lanchonete.estado == "RN" %}selected{% endif %}>RN</option>
+                            <option value="RS" {% if lanchonete.estado == "RS" %}selected{% endif %}>RS</option>
+                            <option value="RO" {% if lanchonete.estado == "RO" %}selected{% endif %}>RO</option>
+                            <option value="RR" {% if lanchonete.estado == "RR" %}selected{% endif %}>RR</option>
+                            <option value="SC" {% if lanchonete.estado == "SC" %}selected{% endif %}>SC</option>
+                            <option value="SP" {% if lanchonete.estado == "SP" %}selected{% endif %}>SP</option>
+                            <option value="SE" {% if lanchonete.estado == "SE" %}selected{% endif %}>SE</option>
+                            <option value="TO" {% if lanchonete.estado == "TO" %}selected{% endif %}>TO</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label for="cep">CEP <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="cep" name="cep" value="{{ lanchonete.cep }}" required>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Configurações Operacionais -->
+            <div class="row mt-4">
+                <div class="col-md-12">
+                    <h5 class="mb-3 text-primary">Configurações Operacionais</h5>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="taxa_entrega">Taxa de Entrega (R$)</label>
+                        <input type="number" step="0.01" class="form-control" id="taxa_entrega" name="taxa_entrega" value="{{ lanchonete.taxa_entrega }}">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="tempo_estimado">Tempo Estimado (minutos)</label>
+                        <input type="number" class="form-control" id="tempo_estimado" name="tempo_estimado" value="{{ lanchonete.tempo_estimado }}">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="raio_entrega">Raio de Entrega (km)</label>
+                        <input type="number" step="0.1" class="form-control" id="raio_entrega" name="raio_entrega" value="{{ lanchonete.raio_entrega }}">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label for="dias_funcionamento">Dias de Funcionamento</label>
+                        <input type="text" class="form-control" id="dias_funcionamento" name="dias_funcionamento" 
+                               placeholder="Ex: Segunda a Sexta, Sábados" 
+                               value="{{ lanchonete.dias_funcionamento }}">
+                        <small class="form-text text-muted">Descreva os dias que a lanchonete funciona</small>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="horario_abertura">Horário de Abertura <span class="text-danger">*</span></label>
+                        <input type="time" class="form-control" id="horario_abertura" name="horario_abertura" value="{{ lanchonete.horario_abertura|time:'H:i' }}" required>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="horario_fechamento">Horário de Fechamento <span class="text-danger">*</span></label>
+                        <input type="time" class="form-control" id="horario_fechamento" name="horario_fechamento" value="{{ lanchonete.horario_fechamento|time:'H:i' }}" required>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Formas de Pagamento -->
+            <div class="row mt-4">
+                <div class="col-md-12">
+                    <h5 class="mb-3 text-primary">Formas de Pagamento</h5>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="dinheiro" name="dinheiro" {% if lanchonete.dinheiro %}checked{% endif %}>
+                        <label class="form-check-label" for="dinheiro">
+                            <i class="bi bi-cash"></i> Dinheiro
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="cartao_credito" name="cartao_credito" {% if lanchonete.cartao_credito %}checked{% endif %}>
+                        <label class="form-check-label" for="cartao_credito">
+                            <i class="bi bi-credit-card"></i> Cartão de Crédito
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="cartao_debito" name="cartao_debito" {% if lanchonete.cartao_debito %}checked{% endif %}>
+                        <label class="form-check-label" for="cartao_debito">
+                            <i class="bi bi-credit-card-2-front"></i> Cartão de Débito
+                        </label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="pix" name="pix" {% if lanchonete.pix %}checked{% endif %}>
+                        <label class="form-check-label" for="pix">
+                            <i class="bi bi-phone"></i> PIX
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="vale_refeicao" name="vale_refeicao" {% if lanchonete.vale_refeicao %}checked{% endif %}>
+                        <label class="form-check-label" for="vale_refeicao">
+                            <i class="bi bi-card-text"></i> Vale Refeição
+                        </label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row mt-3">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="chave_pix">Chave PIX</label>
+                        <input type="text" class="form-control" id="chave_pix" name="chave_pix" 
+                               placeholder="Email, telefone, CPF/CNPJ ou chave aleatória"
+                               value="{{ lanchonete.chave_pix }}">
+                        <small class="form-text text-muted">Opcional - Para receber pagamentos via PIX</small>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row mt-4">
+                <div class="col-md-12">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-check-circle"></i> Salvar Alterações
+                    </button>
+                    <a href="{% url 'minhas_lanchonetes' %}" class="btn btn-secondary ml-2">
+                        <i class="bi bi-x-circle"></i> Cancelar
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Máscara para CNPJ
+    const cnpjInput = document.getElementById('cnpj');
+    cnpjInput.addEventListener('input', function(e) {
+        let value = e.target.value.replace(/\D/g, '');
+        value = value.replace(/(\d{2})(\d)/, '$1.$2');
+        value = value.replace(/(\d{3})(\d)/, '$1.$2');
+        value = value.replace(/(\d{3})(\d)/, '$1/$2');
+        value = value.replace(/(\d{4})(\d{1,2})/, '$1-$2');
+        e.target.value = value;
+    });
+    
+    // Máscara para CEP
+    const cepInput = document.getElementById('cep');
+    cepInput.addEventListener('input', function(e) {
+        let value = e.target.value.replace(/\D/g, '');
+        value = value.replace(/(\d{5})(\d)/, '$1-$2');
+        e.target.value = value;
+    });
+    
+    // Máscara para telefone
+    const telefoneInput = document.getElementById('telefone');
+    telefoneInput.addEventListener('input', function(e) {
+        let value = e.target.value.replace(/\D/g, '');
+        if (value.length <= 10) {
+            value = value.replace(/(\d{2})(\d)/, '($1) $2');
+            value = value.replace(/(\d{4})(\d)/, '$1-$2');
+        } else {
+            value = value.replace(/(\d{2})(\d)/, '($1) $2');
+            value = value.replace(/(\d{5})(\d)/, '$1-$2');
+        }
+        e.target.value = value;
+    });
+});
+</script>
+{% endblock %} 

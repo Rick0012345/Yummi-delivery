@@ -7,12 +7,22 @@ urlpatterns = [
     path('', html_views.index, name='index'),
     path('login/', LoginView.as_view(template_name='core/login.html'), name='login'),
     path('logout/', LogoutView.as_view(), name='logout'),
+    
+    # Lanchonetes
+    path('lanchonetes/', html_views.minhas_lanchonetes, name='minhas_lanchonetes'),
+    path('lanchonetes/cadastrar/', html_views.cadastrar_lanchonete, name='cadastrar_lanchonete'),
+    path('lanchonetes/editar/<int:lanchonete_id>/', html_views.editar_lanchonete, name='editar_lanchonete'),
+    path('lanchonetes/selecionar/<int:lanchonete_id>/', html_views.selecionar_lanchonete, name='selecionar_lanchonete'),
+    
+    # Dashboard e páginas principais
     path('dashboard/', html_views.dashboard, name='dashboard'),
     path('pedidos/', html_views.pedidos, name='pedidos'),
     path('cardapio/', html_views.cardapio, name='cardapio'),
     path('clientes/', html_views.clientes, name='clientes'),
     path('cozinha/', html_views.cozinha, name='cozinha'),
     path('configuracoes/', html_views.configuracoes, name='configuracoes'),
+    
+    # Operações de cardápio
     path('add_category/', html_views.add_category, name='add_category'),
     path('add_product/', html_views.add_product, name='add_product'),
     path('edit_category/<int:category_id>/', html_views.edit_category, name='edit_category'),
