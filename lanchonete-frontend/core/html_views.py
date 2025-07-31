@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db.models import Q
+from django.http import JsonResponse
 from .models import Category, Product, Cliente, Pedido, PedidoItem, Lanchonete, UsuarioLanchonete
 from .serializers import CategorySerializer, ProductSerializer, ClienteSerializer, PedidoSerializer
 
@@ -159,11 +160,18 @@ def get_lanchonete_ativa(request):
         return get_object_or_404(Lanchonete, id=lanchonete_id)
     return None
 
-@login_required
+def health_check(request):
+    """Health check para o Railway"""
+    return JsonResponse({'status': 'ok', 'message': 'Django app is running'})
+
 def index(request):
-    if not request.session.get('lanchonete_ativa'):
-        return redirect('minhas_lanchonetes')
-    return render(request, 'core/index.html')
+    """Página inicial - redireciona para login se não autenticado"""
+    if request.user.is_authenticated:
+        if not request.session.get('lanchonete_ativa'):
+            return redirect('minhas_lanchonetes')
+        return render(request, 'core/index.html')
+    else:
+        return redirect('login')
 
 @login_required
 @lanchonete_required
