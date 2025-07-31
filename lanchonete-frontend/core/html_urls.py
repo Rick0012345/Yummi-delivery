@@ -4,6 +4,7 @@ from . import html_views
 
 # HTML/template views URLs (optional)
 urlpatterns = [
+    path('health/', html_views.health_check, name='health_check'),
     path('', html_views.index, name='index'),
     path('login/', LoginView.as_view(template_name='core/login.html'), name='login'),
     path('logout/', LogoutView.as_view(), name='logout'),

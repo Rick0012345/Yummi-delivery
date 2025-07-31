@@ -21,11 +21,11 @@ RUN pip install --upgrade pip && \
 # Copiar os arquivos do projeto
 COPY . /usr/src/app/
 
-# Coletar arquivos estáticos 
-RUN python manage.py collectstatic --noinput
+# Tornar o script executável
+RUN chmod +x /usr/src/app/start.sh
 
 # Expor a porta
 EXPOSE 8000
 
-# Inicialização rápida - sem limpeza automática de cache
-CMD ["sh", "-c", "python manage.py migrate --noinput && echo 'Iniciando servidor Gunicorn na porta 8000...' && gunicorn lanchonete.wsgi:application --bind 0.0.0.0:8000 --workers 3 --timeout 60"]
+# Comando padrão para iniciar o servidor
+CMD ["/usr/src/app/start.sh"]

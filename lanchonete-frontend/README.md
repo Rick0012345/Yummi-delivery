@@ -55,4 +55,26 @@ python manage.py runserver
 - Sistema de autenticação
 - Dashboard administrativo
 - Gerenciamento de produtos
-- Gerenciamento de pedidos 
+- Gerenciamento de pedidos
+
+## Deploy no Railway
+
+O Railway detecta automaticamente o Dockerfile e faz o deploy. Configure as variáveis de ambiente no painel do Railway:
+
+### Variáveis de Ambiente Principais:
+
+```bash
+DJANGO_SECRET_KEY=sua-chave-secreta-aqui
+DJANGO_DEBUG=False
+DJANGO_ALLOWED_HOSTS=0.0.0.0,localhost,127.0.0.1,.railway.app,.up.railway.app
+DJANGO_CSRF_ORIGINS=http://localhost,http://127.0.0.1,https://*.railway.app,https://*.up.railway.app
+DJANGO_CORS_ORIGINS=http://localhost,http://127.0.0.1,https://*.railway.app,https://*.up.railway.app
+DJANGO_SECURE_SSL_REDIRECT=True
+
+# Database
+POSTGRES_DB=lanchonete_db
+POSTGRES_USER=lanchonete_user
+POSTGRES_PASSWORD=sua-senha
+POSTGRES_HOST=seu-host-railway
+POSTGRES_PORT=5432
+``` 
