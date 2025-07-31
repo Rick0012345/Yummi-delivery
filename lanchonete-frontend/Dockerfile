@@ -21,11 +21,5 @@ RUN pip install --upgrade pip && \
 # Copiar os arquivos do projeto
 COPY . /usr/src/app/
 
-# Tornar o script executável
-RUN chmod +x /usr/src/app/start.sh
-
 # Expor a porta
 EXPOSE 8000
-
-# Comando padrão para iniciar o servidor
-CMD ["/usr/src/app/start.sh"]
