@@ -1,37 +1,28 @@
 FROM python:3.12-slim
 
-# Configurações do Python
+# Hoje em dia, utiliza-se key=value, ao invés de key value.
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
 # Instalar dependências do sistema
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends \
-        postgresql-client \
-        libpq-dev \
-        build-essential \
+    && apt-get install -y python3-dev postgresql-client libpq-dev build-essential pkg-config \
     && rm -rf /var/lib/apt/lists/*
 
-# Definir diretório de trabalho
+# Francamente, eu não sei porque, mas sempre funcionou em /usr/src/app.
 WORKDIR /usr/src/app
 
-# Copiar requirements primeiro para aproveitar cache do Docker
 COPY requirements.txt .
 
-# Instalar dependências Python
-RUN pip install --upgrade pip && \
+# Atualizar pip para a versão mais recente por segurança.
+RUN pip install --upgrade pip && \ 
     pip install --no-cache-dir -r requirements.txt
 
-# Copiar o código do projeto
-COPY . .
-
-# Criar usuário não-root para segurança
-RUN adduser --disabled-password --gecos '' appuser && \
-    chown -R appuser:appuser /usr/src/app
-USER appuser
+# Copiar os arquivos do projeto
+COPY . /usr/src/app/
 
 # Expor a porta
 EXPOSE 8000
 
-# Comando para Railway (será sobrescrito pelo railway.toml se necessário)
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "3", "lanchonete.wsgi:application"]
+# Comando completo para Railway - migrações, static files e servidor
+CMD ["sh", "-c", "python manage.py migrate --noinput && python manage.py collectstatic --noinput && gunicorn lanchonete.wsgi:application --bind 0.0.0.0:8000"]
