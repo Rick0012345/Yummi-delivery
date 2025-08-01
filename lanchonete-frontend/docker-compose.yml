@@ -18,14 +18,13 @@ services:
 
   web:
     build: .
-    container_name: lanchonete # lachonete
-    hostname: lanchonete
+    container_name: lanchonete_web
     volumes:
       - .:/usr/src/app
     ports:
       - "8000:8000"
     environment:
-      - DJANGO_SECRET_KEY=chave-super-secreta
+      - DJANGO_SECRET_KEY=chave-super-secreta-local
       - DJANGO_DEBUG=1
       - DJANGO_SETTINGS_MODULE=lanchonete.settings 
       - DJANGO_ALLOWED_HOSTS=0.0.0.0,localhost,127.0.0.1
