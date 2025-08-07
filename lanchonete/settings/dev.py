@@ -16,11 +16,15 @@ CSRF_TRUSTED_ORIGINS = os.environ.get('DJANGO_CSRF_ORIGINS', 'http://localhost,h
 CORS_ALLOWED_ORIGINS = os.environ.get('DJANGO_CORS_ORIGINS', 'http://localhost,http://127.0.0.1').split(',')
 CORS_ALLOW_CREDENTIALS = True
 
-# Database para desenvolvimento (SQLite)
+# Database para desenvolvimento (PostgreSQL)
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.environ.get('POSTGRES_DB', 'lanchonete_dev'),
+        'USER': os.environ.get('POSTGRES_USER', 'postgres'),
+        'PASSWORD': os.environ.get('POSTGRES_PASSWORD', 'postgres123'),
+        'HOST': os.environ.get('POSTGRES_HOST', 'db'),
+        'PORT': os.environ.get('POSTGRES_PORT', '5432'),
     }
 }
 
@@ -67,4 +71,4 @@ CSRF_COOKIE_SECURE = False
 SECURE_SSL_REDIRECT = False
 SECURE_HSTS_SECONDS = 0
 SECURE_HSTS_INCLUDE_SUBDOMAINS = False
-SECURE_HSTS_PRELOAD = False 
+SECURE_HSTS_PRELOAD = False
