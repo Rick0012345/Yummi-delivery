@@ -1,0 +1,276 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Lanchonete{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-3 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            Pedidos (Hoje)</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">25</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="bi bi-receipt fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3 mb-4">
+        <div class="card border-left-success shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                            Faturamento (Hoje)</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">R$ 1.250,00</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="bi bi-currency-dollar fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3 mb-4">
+        <div class="card border-left-info shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                            Pedidos em Preparo</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">8</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="bi bi-fire fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3 mb-4">
+        <div class="card border-left-warning shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                            Clientes Novos (Mês)</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">18</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="bi bi-people fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary">Faturamento Mensal</h6>
+            </div>
+            <div class="card-body">
+                <div class="chart-area">
+                    <canvas id="vendasChart" style="height: 300px;"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary">Produtos Mais Vendidos</h6>
+            </div>
+            <div class="card-body">
+                <div class="chart-pie">
+                    <canvas id="produtosChart" style="height: 300px;"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-6">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Últimos Pedidos</h6>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>Nº</th>
+                                <th>Cliente</th>
+                                <th>Valor</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>#1234</td>
+                                <td>João Silva</td>
+                                <td>R$ 45,90</td>
+                                <td><span class="badge bg-warning">Preparando</span></td>
+                            </tr>
+                            <tr>
+                                <td>#1233</td>
+                                <td>Maria Oliveira</td>
+                                <td>R$ 32,50</td>
+                                <td><span class="badge bg-success">Entregue</span></td>
+                            </tr>
+                            <tr>
+                                <td>#1232</td>
+                                <td>Pedro Santos</td>
+                                <td>R$ 78,00</td>
+                                <td><span class="badge bg-success">Entregue</span></td>
+                            </tr>
+                            <tr>
+                                <td>#1231</td>
+                                <td>Ana Costa</td>
+                                <td>R$ 25,00</td>
+                                <td><span class="badge bg-success">Entregue</span></td>
+                            </tr>
+                            <tr>
+                                <td>#1230</td>
+                                <td>Carlos Ferreira</td>
+                                <td>R$ 52,80</td>
+                                <td><span class="badge bg-success">Entregue</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Atividades Recentes</h6>
+            </div>
+            <div class="card-body">
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-item-marker">
+                            <div class="timeline-item-marker-text">09:45</div>
+                            <div class="timeline-item-marker-indicator bg-success"></div>
+                        </div>
+                        <div class="timeline-item-content">
+                            Pedido #1234 recebido de João Silva
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-item-marker">
+                            <div class="timeline-item-marker-text">09:30</div>
+                            <div class="timeline-item-marker-indicator bg-primary"></div>
+                        </div>
+                        <div class="timeline-item-content">
+                            Pedido #1233 entregue para Maria Oliveira
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-item-marker">
+                            <div class="timeline-item-marker-text">09:15</div>
+                            <div class="timeline-item-marker-indicator bg-warning"></div>
+                        </div>
+                        <div class="timeline-item-content">
+                            Novo cliente cadastrado: Lucas Mendes
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-item-marker">
+                            <div class="timeline-item-marker-text">09:00</div>
+                            <div class="timeline-item-marker-indicator bg-info"></div>
+                        </div>
+                        <div class="timeline-item-content">
+                            Produto "X-Tudo" atualizado no cardápio
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-item-marker">
+                            <div class="timeline-item-marker-text">08:45</div>
+                            <div class="timeline-item-marker-indicator bg-danger"></div>
+                        </div>
+                        <div class="timeline-item-content">
+                            Pedido #1230 cancelado por Carlos Ferreira
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Gráfico de Vendas
+    var ctx = document.getElementById('vendasChart').getContext('2d');
+    var vendasChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+            datasets: [{
+                label: 'Faturamento Mensal (R$)',
+                data: [15000, 17500, 16800, 18900, 21000, 22500, 24000, 25500, 23800, 24200, 26500, 28000],
+                backgroundColor: 'rgba(78, 115, 223, 0.05)',
+                borderColor: 'rgba(78, 115, 223, 1)',
+                pointBackgroundColor: 'rgba(78, 115, 223, 1)',
+                pointBorderColor: '#fff',
+                pointHoverBackgroundColor: '#fff',
+                pointHoverBorderColor: 'rgba(78, 115, 223, 1)',
+                borderWidth: 2,
+                fill: true
+            }]
+        },
+        options: {
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: false
+                }
+            }
+        }
+    });
+
+    // Gráfico de Produtos
+    var ctx2 = document.getElementById('produtosChart').getContext('2d');
+    var produtosChart = new Chart(ctx2, {
+        type: 'doughnut',
+        data: {
+            labels: ['X-Tudo', 'X-Salada', 'X-Bacon', 'Batata Frita', 'Refrigerante'],
+            datasets: [{
+                data: [35, 20, 15, 18, 12],
+                backgroundColor: [
+                    '#4e73df',
+                    '#1cc88a',
+                    '#36b9cc',
+                    '#f6c23e',
+                    '#e74a3b'
+                ]
+            }]
+        },
+        options: {
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom'
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}

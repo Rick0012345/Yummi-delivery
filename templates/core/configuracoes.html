@@ -1,0 +1,288 @@
+{% extends "base.html" %}
+
+{% block title %}Configurações - Lanchonete{% endblock %}
+{% load static %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-6">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Informações da Lanchonete</h6>
+            </div>
+            <div class="card-body">
+                <form>
+                    <div class="mb-3">
+                        <label for="nomeLanchonete" class="form-label">Nome da Lanchonete</label>
+                        <input type="text" class="form-control" id="nomeLanchonete" value="Lanchonete Exemplo">
+                    </div>
+                    <div class="mb-3">
+                        <label for="cnpj" class="form-label">CNPJ</label>
+                        <input type="text" class="form-control" id="cnpj" value="12.345.678/0001-90">
+                    </div>
+                    <div class="mb-3">
+                        <label for="telefone" class="form-label">Telefone</label>
+                        <input type="tel" class="form-control" id="telefone" value="(11) 1234-5678">
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">E-mail</label>
+                        <input type="email" class="form-control" id="email" value="contato@lanchonete.com">
+                    </div>
+                    <div class="mb-3">
+                        <label for="endereco" class="form-label">Endereço</label>
+                        <input type="text" class="form-control" id="endereco" value="Rua Exemplo, 123 - Centro">
+                    </div>
+                    <div class="mb-3">
+                        <label for="cidade" class="form-label">Cidade/UF</label>
+                        <input type="text" class="form-control" id="cidade" value="São Paulo - SP">
+                    </div>
+                    <div class="mb-3">
+                        <label for="logo" class="form-label">Logo</label>
+                        <input class="form-control" type="file" id="logo">
+                        <div class="mt-2">
+                            <img src="{% static 'img/logo.png' %}" alt="Logo atual" class="img-thumbnail" style="max-width: 150px;">
+                        </div>
+                    </div>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">Salvar Informações</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-6">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Configurações de Entrega</h6>
+            </div>
+            <div class="card-body">
+                <form>
+                    <div class="mb-3">
+                        <label for="taxaEntrega" class="form-label">Taxa de Entrega (R$)</label>
+                        <input type="number" class="form-control" id="taxaEntrega" value="5.00" step="0.01" min="0">
+                    </div>
+                    <div class="mb-3">
+                        <label for="tempoEstimado" class="form-label">Tempo Estimado de Entrega (minutos)</label>
+                        <input type="number" class="form-control" id="tempoEstimado" value="30" min="1">
+                    </div>
+                    <div class="mb-3">
+                        <label for="raioEntrega" class="form-label">Raio de Entrega (km)</label>
+                        <input type="number" class="form-control" id="raioEntrega" value="5" step="0.1" min="0">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Dias de Funcionamento</label>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="segunda" checked>
+                                    <label class="form-check-label" for="segunda">Segunda-feira</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="terca" checked>
+                                    <label class="form-check-label" for="terca">Terça-feira</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="quarta" checked>
+                                    <label class="form-check-label" for="quarta">Quarta-feira</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="quinta" checked>
+                                    <label class="form-check-label" for="quinta">Quinta-feira</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="sexta" checked>
+                                    <label class="form-check-label" for="sexta">Sexta-feira</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="sabado" checked>
+                                    <label class="form-check-label" for="sabado">Sábado</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="domingo" checked>
+                                    <label class="form-check-label" for="domingo">Domingo</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="horarioAbertura" class="form-label">Horário de Abertura</label>
+                            <input type="time" class="form-control" id="horarioAbertura" value="10:00">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="horarioFechamento" class="form-label">Horário de Fechamento</label>
+                            <input type="time" class="form-control" id="horarioFechamento" value="22:00">
+                        </div>
+                    </div>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">Salvar Configurações</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-6">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Formas de Pagamento</h6>
+            </div>
+            <div class="card-body">
+                <form>
+                    <div class="mb-3">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="dinheiro" checked>
+                            <label class="form-check-label" for="dinheiro">Dinheiro</label>
+                        </div>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="cartaoCredito" checked>
+                            <label class="form-check-label" for="cartaoCredito">Cartão de Crédito</label>
+                        </div>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="cartaoDebito" checked>
+                            <label class="form-check-label" for="cartaoDebito">Cartão de Débito</label>
+                        </div>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="pix" checked>
+                            <label class="form-check-label" for="pix">PIX</label>
+                        </div>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="valeRefeicao">
+                            <label class="form-check-label" for="valeRefeicao">Vale Refeição</label>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="chavePix" class="form-label">Chave PIX</label>
+                        <input type="text" class="form-control" id="chavePix" value="12345678901">
+                    </div>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">Salvar Formas de Pagamento</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-6">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Usuários do Sistema</h6>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>Nome</th>
+                                <th>Usuário</th>
+                                <th>Perfil</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Administrador</td>
+                                <td>admin</td>
+                                <td>Administrador</td>
+                                <td>
+                                    <button class="btn btn-sm btn-info">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-danger">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Atendente</td>
+                                <td>atendente</td>
+                                <td>Atendente</td>
+                                <td>
+                                    <button class="btn btn-sm btn-info">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-danger">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Cozinheiro</td>
+                                <td>cozinha</td>
+                                <td>Cozinha</td>
+                                <td>
+                                    <button class="btn btn-sm btn-info">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-danger">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="d-grid mt-3">
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#novoUsuarioModal">
+                        <i class="bi bi-plus-circle me-1"></i> Novo Usuário
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Novo Usuário -->
+<div class="modal fade" id="novoUsuarioModal" tabindex="-1" aria-labelledby="novoUsuarioModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="novoUsuarioModalLabel">Novo Usuário</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label for="nomeUsuario" class="form-label">Nome Completo</label>
+                        <input type="text" class="form-control" id="nomeUsuario" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="loginUsuario" class="form-label">Login</label>
+                        <input type="text" class="form-control" id="loginUsuario" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="emailUsuario" class="form-label">E-mail</label>
+                        <input type="email" class="form-control" id="emailUsuario" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="senhaUsuario" class="form-label">Senha</label>
+                        <input type="password" class="form-control" id="senhaUsuario" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="confirmarSenha" class="form-label">Confirmar Senha</label>
+                        <input type="password" class="form-control" id="confirmarSenha" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="perfilUsuario" class="form-label">Perfil</label>
+                        <select class="form-select" id="perfilUsuario" required>
+                            <option value="">Selecione um perfil</option>
+                            <option value="admin">Administrador</option>
+                            <option value="atendente">Atendente</option>
+                            <option value="cozinha">Cozinha</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary">Salvar</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

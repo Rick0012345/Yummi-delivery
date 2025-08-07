@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}Lanchonete - Bem-vindo{% endblock %}
+
+{% block auth_content %}
+<div class="container">
+    <div class="row justify-content-center align-items-center min-vh-100">
+        <div class="col-md-8 text-center">
+            <h1 class="display-4 mb-4">Bem-vindo ao Sistema de Gerenciamento de Lanchonete</h1>
+            <p class="lead mb-5">Gerencie seus pedidos, cardápio e clientes de forma simples e eficiente.</p>
+            <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                <a href="{% url 'login' %}" class="btn btn-primary btn-lg px-4 me-md-2">Entrar no Sistema</a>
+                <a href="#" class="btn btn-outline-secondary btn-lg px-4">Saiba Mais</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

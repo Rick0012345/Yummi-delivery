@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: lanchonete-web
+    hostname: lanchonete-web
+    restart: unless-stopped
+    volumes:
+      - .:/app
+      - static_volume:/app/staticfiles
+      - media_volume:/app/media
+    ports:
+      - "${DJANGO_PORT:-8000}:8000"
+    env_file:
+      - dotenv/.env
+    # environment:
+    #   # O DJANGO_SETTINGS_MODULE já é definido no manage.py
+    #   # - DJANGO_SETTINGS_MODULE=lanchonete.settings.dev
+    #   # O PYTHONPATH já está definido no Dockerfile
+    #   # - PYTHONPATH=/app
+    depends_on:
+      - db
+    networks:
+      - lanchonete-network
+
+  db:
+    image: postgres:15-alpine
+    container_name: lanchonete-db
+    restart: unless-stopped
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    env_file:
+      - dotenv/.env
+    # As variáveis já estão definidas no arquivo .env
+    # environment:
+    #   - POSTGRES_DB=${POSTGRES_DB:-lanchonete_dev}
+    #   - POSTGRES_USER=${POSTGRES_USER:-postgres}
+    #   - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres123}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    networks:
+      - lanchonete-network
+
+volumes:
+  postgres_data:
+  static_volume:
+  media_volume:
+
+networks:
+  lanchonete-network:
+    driver: bridge
