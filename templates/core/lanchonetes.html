@@ -1,0 +1,353 @@
+{% extends 'base.html' %}
+
+{% block title %}Lanchonetes - {{ block.super }}{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Gerenciar Lanchonetes</h2>
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addLanchoneteModal">
+        <i class="bi bi-plus-circle me-2"></i>Nova Lanchonete
+    </button>
+</div>
+
+<!-- Messages -->
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    {% endfor %}
+{% endif %}
+
+<!-- Lanchonetes List -->
+<div class="row">
+    {% for lanchonete in lanchonetes %}
+    <div class="col-md-6 col-lg-4 mb-4">
+        <div class="card h-100">
+            {% if lanchonete.logo %}
+            <img src="{{ lanchonete.logo.url }}" class="card-img-top" alt="{{ lanchonete.nome }}" style="height: 200px; object-fit: cover;">
+            {% else %}
+            <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                <i class="bi bi-shop" style="font-size: 3rem; color: #6c757d;"></i>
+            </div>
+            {% endif %}
+            <div class="card-body d-flex flex-column">
+                <h5 class="card-title">{{ lanchonete.nome }}</h5>
+                <p class="card-text">
+                    <small class="text-muted">
+                        <i class="bi bi-geo-alt me-1"></i>{{ lanchonete.cidade }}, {{ lanchonete.estado }}<br>
+                        <i class="bi bi-telephone me-1"></i>{{ lanchonete.telefone }}<br>
+                        <i class="bi bi-envelope me-1"></i>{{ lanchonete.email }}
+                    </small>
+                </p>
+                <div class="mt-auto">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="badge {% if lanchonete.status == 'ativa' %}bg-success{% else %}bg-secondary{% endif %}">
+                            {{ lanchonete.get_status_display }}
+                        </span>
+                        <small class="text-muted">{{ lanchonete.data_criacao|date:"d/m/Y" }}</small>
+                    </div>
+                    <div class="btn-group w-100" role="group">
+                        <a href="{% url 'view_lanchonete' lanchonete.id %}" class="btn btn-outline-info btn-sm">
+                            <i class="bi bi-eye"></i>
+                        </a>
+                        <button type="button" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#editLanchoneteModal{{ lanchonete.id }}">
+                            <i class="bi bi-pencil"></i>
+                        </button>
+                        <a href="{% url 'toggle_lanchonete_status' lanchonete.id %}" class="btn btn-outline-warning btn-sm" onclick="return confirm('Deseja alterar o status desta lanchonete?')">
+                            <i class="bi bi-toggle-{% if lanchonete.status == 'ativa' %}off{% else %}on{% endif %}"></i>
+                        </a>
+                        <a href="{% url 'delete_lanchonete' lanchonete.id %}" class="btn btn-outline-danger btn-sm" onclick="return confirm('Tem certeza que deseja excluir esta lanchonete?')">
+                            <i class="bi bi-trash"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+        <div class="alert alert-info text-center">
+            <i class="bi bi-info-circle me-2"></i>Nenhuma lanchonete cadastrada ainda.
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Add Lanchonete Modal -->
+<div class="modal fade" id="addLanchoneteModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Nova Lanchonete</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="post" action="{% url 'add_lanchonete' %}" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="nome" class="form-label">Nome da Lanchonete *</label>
+                            <input type="text" class="form-control" id="nome" name="nome" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="cnpj" class="form-label">CNPJ</label>
+                            <input type="text" class="form-control" id="cnpj" name="cnpj">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="telefone" class="form-label">Telefone</label>
+                            <input type="text" class="form-control" id="telefone" name="telefone">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="email" class="form-label">E-mail</label>
+                            <input type="email" class="form-control" id="email" name="email">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-8 mb-3">
+                            <label for="endereco" class="form-label">Endereço</label>
+                            <input type="text" class="form-control" id="endereco" name="endereco">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="numero" class="form-label">Número</label>
+                            <input type="text" class="form-control" id="numero" name="numero" value="S/N">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="bairro" class="form-label">Bairro</label>
+                            <input type="text" class="form-control" id="bairro" name="bairro" value="Centro">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="cidade" class="form-label">Cidade</label>
+                            <input type="text" class="form-control" id="cidade" name="cidade">
+                        </div>
+                        <div class="col-md-2 mb-3">
+                            <label for="estado" class="form-label">Estado</label>
+                            <input type="text" class="form-control" id="estado" name="estado" value="RJ" maxlength="2">
+                        </div>
+                        <div class="col-md-2 mb-3">
+                            <label for="cep" class="form-label">CEP</label>
+                            <input type="text" class="form-control" id="cep" name="cep">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="taxa_entrega" class="form-label">Taxa de Entrega (R$)</label>
+                            <input type="number" class="form-control" id="taxa_entrega" name="taxa_entrega" step="0.01" value="0">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="tempo_estimado" class="form-label">Tempo Estimado (min)</label>
+                            <input type="number" class="form-control" id="tempo_estimado" name="tempo_estimado" value="30">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="raio_entrega" class="form-label">Raio de Entrega (km)</label>
+                            <input type="number" class="form-control" id="raio_entrega" name="raio_entrega" step="0.1" value="5">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="horario_abertura" class="form-label">Horário de Abertura</label>
+                            <input type="time" class="form-control" id="horario_abertura" name="horario_abertura">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="horario_fechamento" class="form-label">Horário de Fechamento</label>
+                            <input type="time" class="form-control" id="horario_fechamento" name="horario_fechamento">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="dias_funcionamento" class="form-label">Dias de Funcionamento</label>
+                        <input type="text" class="form-control" id="dias_funcionamento" name="dias_funcionamento" placeholder="Ex: Segunda a Sábado">
+                    </div>
+                    <div class="mb-3">
+                        <label for="chave_pix" class="form-label">Chave PIX</label>
+                        <input type="text" class="form-control" id="chave_pix" name="chave_pix">
+                    </div>
+                    <div class="mb-3">
+                        <label for="logo" class="form-label">Logo</label>
+                        <input type="file" class="form-control" id="logo" name="logo" accept="image/*">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Formas de Pagamento</label>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="dinheiro" name="dinheiro" checked>
+                                    <label class="form-check-label" for="dinheiro">Dinheiro</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="cartao_credito" name="cartao_credito" checked>
+                                    <label class="form-check-label" for="cartao_credito">Cartão de Crédito</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="cartao_debito" name="cartao_debito" checked>
+                                    <label class="form-check-label" for="cartao_debito">Cartão de Débito</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="pix" name="pix" checked>
+                                    <label class="form-check-label" for="pix">PIX</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="vale_refeicao" name="vale_refeicao">
+                                    <label class="form-check-label" for="vale_refeicao">Vale Refeição</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Cadastrar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Lanchonete Modals -->
+{% for lanchonete in lanchonetes %}
+<div class="modal fade" id="editLanchoneteModal{{ lanchonete.id }}" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Editar Lanchonete</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="post" action="{% url 'edit_lanchonete' lanchonete.id %}" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="nome{{ lanchonete.id }}" class="form-label">Nome da Lanchonete *</label>
+                            <input type="text" class="form-control" id="nome{{ lanchonete.id }}" name="nome" value="{{ lanchonete.nome }}" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="cnpj{{ lanchonete.id }}" class="form-label">CNPJ</label>
+                            <input type="text" class="form-control" id="cnpj{{ lanchonete.id }}" name="cnpj" value="{{ lanchonete.cnpj }}">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="telefone{{ lanchonete.id }}" class="form-label">Telefone</label>
+                            <input type="text" class="form-control" id="telefone{{ lanchonete.id }}" name="telefone" value="{{ lanchonete.telefone }}">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="email{{ lanchonete.id }}" class="form-label">E-mail</label>
+                            <input type="email" class="form-control" id="email{{ lanchonete.id }}" name="email" value="{{ lanchonete.email }}">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-8 mb-3">
+                            <label for="endereco{{ lanchonete.id }}" class="form-label">Endereço</label>
+                            <input type="text" class="form-control" id="endereco{{ lanchonete.id }}" name="endereco" value="{{ lanchonete.endereco }}">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="numero{{ lanchonete.id }}" class="form-label">Número</label>
+                            <input type="text" class="form-control" id="numero{{ lanchonete.id }}" name="numero" value="{{ lanchonete.numero }}">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="bairro{{ lanchonete.id }}" class="form-label">Bairro</label>
+                            <input type="text" class="form-control" id="bairro{{ lanchonete.id }}" name="bairro" value="{{ lanchonete.bairro }}">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="cidade{{ lanchonete.id }}" class="form-label">Cidade</label>
+                            <input type="text" class="form-control" id="cidade{{ lanchonete.id }}" name="cidade" value="{{ lanchonete.cidade }}">
+                        </div>
+                        <div class="col-md-2 mb-3">
+                            <label for="estado{{ lanchonete.id }}" class="form-label">Estado</label>
+                            <input type="text" class="form-control" id="estado{{ lanchonete.id }}" name="estado" value="{{ lanchonete.estado }}" maxlength="2">
+                        </div>
+                        <div class="col-md-2 mb-3">
+                            <label for="cep{{ lanchonete.id }}" class="form-label">CEP</label>
+                            <input type="text" class="form-control" id="cep{{ lanchonete.id }}" name="cep" value="{{ lanchonete.cep }}">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="taxa_entrega{{ lanchonete.id }}" class="form-label">Taxa de Entrega (R$)</label>
+                            <input type="number" class="form-control" id="taxa_entrega{{ lanchonete.id }}" name="taxa_entrega" step="0.01" value="{{ lanchonete.taxa_entrega }}">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="tempo_estimado{{ lanchonete.id }}" class="form-label">Tempo Estimado (min)</label>
+                            <input type="number" class="form-control" id="tempo_estimado{{ lanchonete.id }}" name="tempo_estimado" value="{{ lanchonete.tempo_estimado }}">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="raio_entrega{{ lanchonete.id }}" class="form-label">Raio de Entrega (km)</label>
+                            <input type="number" class="form-control" id="raio_entrega{{ lanchonete.id }}" name="raio_entrega" step="0.1" value="{{ lanchonete.raio_entrega }}">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="horario_abertura{{ lanchonete.id }}" class="form-label">Horário de Abertura</label>
+                            <input type="time" class="form-control" id="horario_abertura{{ lanchonete.id }}" name="horario_abertura" value="{{ lanchonete.horario_abertura|time:'H:i' }}">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="horario_fechamento{{ lanchonete.id }}" class="form-label">Horário de Fechamento</label>
+                            <input type="time" class="form-control" id="horario_fechamento{{ lanchonete.id }}" name="horario_fechamento" value="{{ lanchonete.horario_fechamento|time:'H:i' }}">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="dias_funcionamento{{ lanchonete.id }}" class="form-label">Dias de Funcionamento</label>
+                        <input type="text" class="form-control" id="dias_funcionamento{{ lanchonete.id }}" name="dias_funcionamento" value="{{ lanchonete.dias_funcionamento }}">
+                    </div>
+                    <div class="mb-3">
+                        <label for="chave_pix{{ lanchonete.id }}" class="form-label">Chave PIX</label>
+                        <input type="text" class="form-control" id="chave_pix{{ lanchonete.id }}" name="chave_pix" value="{{ lanchonete.chave_pix }}">
+                    </div>
+                    <div class="mb-3">
+                        <label for="logo{{ lanchonete.id }}" class="form-label">Logo</label>
+                        {% if lanchonete.logo %}
+                        <div class="mb-2">
+                            <img src="{{ lanchonete.logo.url }}" alt="Logo atual" class="img-thumbnail" style="max-width: 100px;">
+                        </div>
+                        {% endif %}
+                        <input type="file" class="form-control" id="logo{{ lanchonete.id }}" name="logo" accept="image/*">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Formas de Pagamento</label>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="dinheiro{{ lanchonete.id }}" name="dinheiro" {% if lanchonete.dinheiro %}checked{% endif %}>
+                                    <label class="form-check-label" for="dinheiro{{ lanchonete.id }}">Dinheiro</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="cartao_credito{{ lanchonete.id }}" name="cartao_credito" {% if lanchonete.cartao_credito %}checked{% endif %}>
+                                    <label class="form-check-label" for="cartao_credito{{ lanchonete.id }}">Cartão de Crédito</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="cartao_debito{{ lanchonete.id }}" name="cartao_debito" {% if lanchonete.cartao_debito %}checked{% endif %}>
+                                    <label class="form-check-label" for="cartao_debito{{ lanchonete.id }}">Cartão de Débito</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="pix{{ lanchonete.id }}" name="pix" {% if lanchonete.pix %}checked{% endif %}>
+                                    <label class="form-check-label" for="pix{{ lanchonete.id }}">PIX</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="vale_refeicao{{ lanchonete.id }}" name="vale_refeicao" {% if lanchonete.vale_refeicao %}checked{% endif %}>
+                                    <label class="form-check-label" for="vale_refeicao{{ lanchonete.id }}">Vale Refeição</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+{% endblock %}

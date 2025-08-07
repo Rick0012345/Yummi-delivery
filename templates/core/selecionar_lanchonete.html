@@ -1,0 +1,201 @@
+{% extends "base.html" %}
+
+{% block title %}Selecionar Lanchonete{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0"><i class="bi bi-shop me-2"></i>Selecionar Lanchonete</h4>
+                </div>
+                <div class="card-body">
+                    {% if lanchonetes %}
+                        <p class="text-muted mb-4">Selecione uma lanchonete para continuar:</p>
+                        
+                        <form method="post">
+                            {% csrf_token %}
+                            <div class="row">
+                                {% for lanchonete in lanchonetes %}
+                                <div class="col-md-6 mb-3">
+                                    <div class="card h-100 lanchonete-card" style="cursor: pointer;" onclick="selectLanchonete({{ lanchonete.id }})">
+                                        <div class="card-body d-flex flex-column">
+                                            <div class="d-flex align-items-center mb-3">
+                                                {% if lanchonete.logo %}
+                                                    <img src="{{ lanchonete.logo.url }}" alt="{{ lanchonete.nome }}" class="rounded me-3" style="width: 60px; height: 60px; object-fit: cover;">
+                                                {% else %}
+                                                    <div class="bg-light rounded me-3 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                                                        <i class="bi bi-shop text-muted" style="font-size: 1.5rem;"></i>
+                                                    </div>
+                                                {% endif %}
+                                                <div>
+                                                    <h5 class="card-title mb-1">{{ lanchonete.nome }}</h5>
+                                                    <small class="text-muted">{{ lanchonete.cidade }}, {{ lanchonete.estado }}</small>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="mt-auto">
+                                                <div class="row text-center">
+                                                    <div class="col-4">
+                                                        <small class="text-muted d-block">Telefone</small>
+                                                        <small>{{ lanchonete.telefone }}</small>
+                                                    </div>
+                                                    <div class="col-4">
+                                                        <small class="text-muted d-block">Status</small>
+                                                        <span class="badge bg-success">{{ lanchonete.get_status_display }}</span>
+                                                    </div>
+                                                    <div class="col-4">
+                                                        <small class="text-muted d-block">Criada em</small>
+                                                        <small>{{ lanchonete.data_criacao|date:"d/m/Y" }}</small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <input type="radio" name="lanchonete_id" value="{{ lanchonete.id }}" class="d-none lanchonete-radio" id="lanchonete_{{ lanchonete.id }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            
+                            <div class="text-center mt-4">
+                                <button type="submit" class="btn btn-primary btn-lg px-5" id="btnSelecionar" disabled>
+                                    <i class="bi bi-check-circle me-2"></i>Selecionar Lanchonete
+                                </button>
+                            </div>
+                        </form>
+                        
+                        <hr class="my-4">
+                        
+                        <div class="text-center">
+                            <p class="text-muted mb-3">Não encontrou sua lanchonete?</p>
+                            <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#novaLanchoneteModal">
+                                <i class="bi bi-plus-circle me-2"></i>Cadastrar Nova Lanchonete
+                            </button>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-5">
+                            <i class="bi bi-shop" style="font-size: 4rem; color: #6c757d;"></i>
+                            <h4 class="mt-3 text-muted">Nenhuma lanchonete encontrada</h4>
+                            <p class="text-muted mb-4">Você precisa cadastrar uma lanchonete para continuar.</p>
+                            <button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#novaLanchoneteModal">
+                                <i class="bi bi-plus-circle me-2"></i>Cadastrar Primeira Lanchonete
+                            </button>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Nova Lanchonete -->
+<div class="modal fade" id="novaLanchoneteModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="bi bi-plus-circle me-2"></i>Nova Lanchonete</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="post" action="{% url 'add_lanchonete' %}?from=selecionar" enctype="multipart/form-data">
+                <div class="modal-body">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="nome" class="form-label">Nome da Lanchonete *</label>
+                            <input type="text" class="form-control" id="nome" name="nome" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="cnpj" class="form-label">CNPJ</label>
+                            <input type="text" class="form-control" id="cnpj" name="cnpj">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="telefone" class="form-label">Telefone *</label>
+                            <input type="text" class="form-control" id="telefone" name="telefone" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="email" class="form-label">E-mail</label>
+                            <input type="email" class="form-control" id="email" name="email">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-8 mb-3">
+                            <label for="endereco" class="form-label">Endereço *</label>
+                            <input type="text" class="form-control" id="endereco" name="endereco" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="numero" class="form-label">Número</label>
+                            <input type="text" class="form-control" id="numero" name="numero" value="S/N">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="bairro" class="form-label">Bairro</label>
+                            <input type="text" class="form-control" id="bairro" name="bairro" value="Centro">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="cidade" class="form-label">Cidade *</label>
+                            <input type="text" class="form-control" id="cidade" name="cidade" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="estado" class="form-label">Estado</label>
+                            <input type="text" class="form-control" id="estado" name="estado" value="RJ">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="cep" class="form-label">CEP</label>
+                        <input type="text" class="form-control" id="cep" name="cep">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Cadastrar Lanchonete</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+.lanchonete-card {
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.lanchonete-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.lanchonete-card.selected {
+    border-color: #0d6efd;
+    background-color: #f8f9ff;
+}
+</style>
+
+<script>
+function selectLanchonete(id) {
+    // Remove seleção anterior
+    document.querySelectorAll('.lanchonete-card').forEach(card => {
+        card.classList.remove('selected');
+    });
+    
+    document.querySelectorAll('.lanchonete-radio').forEach(radio => {
+        radio.checked = false;
+    });
+    
+    // Seleciona a nova lanchonete
+    const selectedCard = document.querySelector(`#lanchonete_${id}`).closest('.lanchonete-card');
+    selectedCard.classList.add('selected');
+    
+    const selectedRadio = document.querySelector(`#lanchonete_${id}`);
+    selectedRadio.checked = true;
+    
+    // Habilita o botão
+    document.getElementById('btnSelecionar').disabled = false;
+}
+</script>
+{% endblock %}

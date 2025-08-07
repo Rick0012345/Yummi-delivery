@@ -47,6 +47,25 @@
                             </a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link {% if active == 'lanchonetes' %}active{% endif %}" href="{% url 'lanchonetes' %}">
+                                <i class="bi bi-shop me-2"></i> Lanchonetes
+                            </a>
+                        </li>
+                        {% if request.session.lanchonete_nome %}
+                        <li class="nav-item mt-3">
+                            <div class="nav-link text-muted small">
+                                <i class="bi bi-building"></i>
+                                <span>Lanchonete Ativa:</span>
+                            </div>
+                            <div class="nav-link py-1">
+                                <strong class="text-primary">{{ request.session.lanchonete_nome }}</strong>
+                                <a href="{% url 'trocar_lanchonete' %}" class="btn btn-outline-secondary btn-sm ms-2" title="Trocar Lanchonete">
+                                    <i class="bi bi-arrow-repeat"></i>
+                                </a>
+                            </div>
+                        </li>
+                        {% endif %}
+                        <li class="nav-item">
                             <a class="nav-link {% if active == 'configuracoes' %}active{% endif %}" href="{% url 'configuracoes' %}">
                                 <i class="bi bi-gear me-2"></i> Configurações
                             </a>
