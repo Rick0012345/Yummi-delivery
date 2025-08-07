@@ -1,22 +1,20 @@
 from django.db import models
 from django.utils import timezone
 
-class BaseCliente(models.Model):
+class Cliente(models.Model):
+    lanchonete = models.ForeignKey('Lanchonete', on_delete=models.CASCADE, related_name='clientes', null=True, blank=True)
     nome = models.CharField(max_length=100)
     telefone = models.CharField(max_length=20)
-    status = models.CharField(max_length=10, choices=[('ativo', 'Ativo'), ('inativo', 'Inativo')], default='ativo')
-    data_cadastro = models.DateField(default=timezone.now)
-
-class EnderecoCliente(BaseCliente):
     endereco = models.CharField(max_length=255)
-    numero_end = models.CharField(max_length=10, default='S/N')
-    complemento = models.CharField(max_length=255)
-    bairro = models.CharField(max_length=100)
-    cidade = models.CharField(max_length=100)
+    numero = models.CharField(max_length=10, default='S/N')
     bairro = models.CharField(max_length=100)
     cidade = models.CharField(max_length=100)
     estado = models.CharField(max_length=2)
     cep = models.CharField(max_length=15, blank=True, default='')
+    complemento = models.CharField(max_length=255, blank=True, default='')
+    observacoes = models.TextField(blank=True, default='')
+    status = models.CharField(max_length=10, choices=[('ativo', 'Ativo'), ('inativo', 'Inativo')], default='ativo')
+    data_cadastro = models.DateField(default=timezone.now)
 
     class Meta:
         verbose_name = 'Cliente'

@@ -1,6 +1,6 @@
 from django.db import models
 
-class BasePedido(models.Model):
+class Pedido(models.Model):
     STATUS_CHOICES = [
         ('pendente', 'Pendente'),
         ('preparando', 'Preparando'),
@@ -8,15 +8,17 @@ class BasePedido(models.Model):
         ('entregue', 'Entregue'),
         ('cancelado', 'Cancelado'),
     ]
-
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pendente')
-    observacao = models.TextField(blank=True, default='')
-
-
-class Pedido(BasePedido):
+    
+    TIPO_ENTREGA_CHOICES = [
+        ('balcao', 'Balcão'),
+        ('entrega', 'Entrega'),
+    ]
     lanchonete = models.ForeignKey('Lanchonete', on_delete=models.CASCADE, related_name='pedidos', null=True, blank=True)
     cliente = models.ForeignKey('Cliente', on_delete=models.CASCADE)
     data_hora = models.DateTimeField(auto_now_add=True)
+    tipo_entrega = models.CharField(max_length=10, choices=TIPO_ENTREGA_CHOICES, default='balcao')
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pendente')
+    observacao = models.TextField(blank=True, default='')
     total = models.DecimalField(max_digits=8, decimal_places=2, default=0)
 
     class Meta:

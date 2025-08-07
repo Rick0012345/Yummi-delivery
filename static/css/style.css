@@ -120,6 +120,10 @@ main {
   min-height: 100vh;
 }
 
+.img-fluid {
+  border-radius: 50%;
+}
+
 /* Responsividade */
 @media (max-width: 767.98px) {
   .sidebar {

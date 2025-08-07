@@ -4,6 +4,16 @@
 {% load static %}
 
 {% block content %}
+<!-- Mensagens de feedback -->
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {% endfor %}
+{% endif %}
+
 <div class="row">
     <div class="col-lg-6">
         <div class="card shadow mb-4">
@@ -11,37 +21,61 @@
                 <h6 class="m-0 font-weight-bold text-primary">Informações da Lanchonete</h6>
             </div>
             <div class="card-body">
-                <form>
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input type="hidden" name="form_type" value="informacoes">
                     <div class="mb-3">
-                        <label for="nomeLanchonete" class="form-label">Nome da Lanchonete</label>
-                        <input type="text" class="form-control" id="nomeLanchonete" value="Lanchonete Exemplo">
+                        <label for="nome" class="form-label">Nome da Lanchonete</label>
+                        <input type="text" class="form-control" id="nome" name="nome" value="{{ lanchonete.nome }}" required>
                     </div>
                     <div class="mb-3">
                         <label for="cnpj" class="form-label">CNPJ</label>
-                        <input type="text" class="form-control" id="cnpj" value="12.345.678/0001-90">
+                        <input type="text" class="form-control" id="cnpj" name="cnpj" value="{{ lanchonete.cnpj }}" required>
                     </div>
                     <div class="mb-3">
                         <label for="telefone" class="form-label">Telefone</label>
-                        <input type="tel" class="form-control" id="telefone" value="(11) 1234-5678">
+                        <input type="tel" class="form-control" id="telefone" name="telefone" value="{{ lanchonete.telefone }}" required>
                     </div>
                     <div class="mb-3">
                         <label for="email" class="form-label">E-mail</label>
-                        <input type="email" class="form-control" id="email" value="contato@lanchonete.com">
+                        <input type="email" class="form-control" id="email" name="email" value="{{ lanchonete.email }}" required>
                     </div>
-                    <div class="mb-3">
-                        <label for="endereco" class="form-label">Endereço</label>
-                        <input type="text" class="form-control" id="endereco" value="Rua Exemplo, 123 - Centro">
+                    <div class="row mb-3">
+                        <div class="col-md-8">
+                            <label for="endereco" class="form-label">Endereço</label>
+                            <input type="text" class="form-control" id="endereco" name="endereco" value="{{ lanchonete.endereco }}" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="numero" class="form-label">Número</label>
+                            <input type="text" class="form-control" id="numero" name="numero" value="{{ lanchonete.numero }}">
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label for="cidade" class="form-label">Cidade/UF</label>
-                        <input type="text" class="form-control" id="cidade" value="São Paulo - SP">
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label for="bairro" class="form-label">Bairro</label>
+                            <input type="text" class="form-control" id="bairro" name="bairro" value="{{ lanchonete.bairro }}" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="cidade" class="form-label">Cidade</label>
+                            <input type="text" class="form-control" id="cidade" name="cidade" value="{{ lanchonete.cidade }}" required>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="estado" class="form-label">UF</label>
+                            <input type="text" class="form-control" id="estado" name="estado" value="{{ lanchonete.estado }}" maxlength="2" required>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="cep" class="form-label">CEP</label>
+                            <input type="text" class="form-control" id="cep" name="cep" value="{{ lanchonete.cep }}" required>
+                        </div>
                     </div>
                     <div class="mb-3">
                         <label for="logo" class="form-label">Logo</label>
-                        <input class="form-control" type="file" id="logo">
+                        <input class="form-control" type="file" id="logo" name="logo" accept="image/*">
+                        {% if lanchonete.logo %}
                         <div class="mt-2">
-                            <img src="{% static 'img/logo.png' %}" alt="Logo atual" class="img-thumbnail" style="max-width: 150px;">
+                            <img src="{{ lanchonete.logo.url }}" alt="Logo atual" class="img-thumbnail" style="max-width: 150px;">
                         </div>
+                        {% endif %}
                     </div>
                     <div class="d-grid">
                         <button type="submit" class="btn btn-primary">Salvar Informações</button>
@@ -57,51 +91,53 @@
                 <h6 class="m-0 font-weight-bold text-primary">Configurações de Entrega</h6>
             </div>
             <div class="card-body">
-                <form>
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="form_type" value="entrega">
                     <div class="mb-3">
-                        <label for="taxaEntrega" class="form-label">Taxa de Entrega (R$)</label>
-                        <input type="number" class="form-control" id="taxaEntrega" value="5.00" step="0.01" min="0">
+                        <label for="taxa_entrega" class="form-label">Taxa de Entrega (R$)</label>
+                        <input type="number" class="form-control" id="taxa_entrega" name="taxa_entrega" value="{{ lanchonete.taxa_entrega }}" step="0.01" min="0" required>
                     </div>
                     <div class="mb-3">
-                        <label for="tempoEstimado" class="form-label">Tempo Estimado de Entrega (minutos)</label>
-                        <input type="number" class="form-control" id="tempoEstimado" value="30" min="1">
+                        <label for="tempo_estimado" class="form-label">Tempo Estimado de Entrega (minutos)</label>
+                        <input type="number" class="form-control" id="tempo_estimado" name="tempo_estimado" value="{{ lanchonete.tempo_estimado }}" min="1" required>
                     </div>
                     <div class="mb-3">
-                        <label for="raioEntrega" class="form-label">Raio de Entrega (km)</label>
-                        <input type="number" class="form-control" id="raioEntrega" value="5" step="0.1" min="0">
+                        <label for="raio_entrega" class="form-label">Raio de Entrega (km)</label>
+                        <input type="number" class="form-control" id="raio_entrega" name="raio_entrega" value="{{ lanchonete.raio_entrega }}" step="0.1" min="0" required>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Dias de Funcionamento</label>
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="segunda" checked>
+                                    <input class="form-check-input" type="checkbox" id="segunda" name="segunda" {% if 'segunda' in dias_funcionamento %}checked{% endif %}>
                                     <label class="form-check-label" for="segunda">Segunda-feira</label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="terca" checked>
+                                    <input class="form-check-input" type="checkbox" id="terca" name="terca" {% if 'terca' in dias_funcionamento %}checked{% endif %}>
                                     <label class="form-check-label" for="terca">Terça-feira</label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="quarta" checked>
+                                    <input class="form-check-input" type="checkbox" id="quarta" name="quarta" {% if 'quarta' in dias_funcionamento %}checked{% endif %}>
                                     <label class="form-check-label" for="quarta">Quarta-feira</label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="quinta" checked>
+                                    <input class="form-check-input" type="checkbox" id="quinta" name="quinta" {% if 'quinta' in dias_funcionamento %}checked{% endif %}>
                                     <label class="form-check-label" for="quinta">Quinta-feira</label>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="sexta" checked>
+                                    <input class="form-check-input" type="checkbox" id="sexta" name="sexta" {% if 'sexta' in dias_funcionamento %}checked{% endif %}>
                                     <label class="form-check-label" for="sexta">Sexta-feira</label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="sabado" checked>
+                                    <input class="form-check-input" type="checkbox" id="sabado" name="sabado" {% if 'sabado' in dias_funcionamento %}checked{% endif %}>
                                     <label class="form-check-label" for="sabado">Sábado</label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="domingo" checked>
+                                    <input class="form-check-input" type="checkbox" id="domingo" name="domingo" {% if 'domingo' in dias_funcionamento %}checked{% endif %}>
                                     <label class="form-check-label" for="domingo">Domingo</label>
                                 </div>
                             </div>
@@ -109,12 +145,12 @@
                     </div>
                     <div class="row mb-3">
                         <div class="col-md-6">
-                            <label for="horarioAbertura" class="form-label">Horário de Abertura</label>
-                            <input type="time" class="form-control" id="horarioAbertura" value="10:00">
+                            <label for="horario_abertura" class="form-label">Horário de Abertura</label>
+                            <input type="time" class="form-control" id="horario_abertura" name="horario_abertura" value="{% if lanchonete.horario_abertura %}{{ lanchonete.horario_abertura|time:'H:i' }}{% endif %}">
                         </div>
                         <div class="col-md-6">
-                            <label for="horarioFechamento" class="form-label">Horário de Fechamento</label>
-                            <input type="time" class="form-control" id="horarioFechamento" value="22:00">
+                            <label for="horario_fechamento" class="form-label">Horário de Fechamento</label>
+                            <input type="time" class="form-control" id="horario_fechamento" name="horario_fechamento" value="{% if lanchonete.horario_fechamento %}{{ lanchonete.horario_fechamento|time:'H:i' }}{% endif %}">
                         </div>
                     </div>
                     <div class="d-grid">
@@ -133,32 +169,19 @@
                 <h6 class="m-0 font-weight-bold text-primary">Formas de Pagamento</h6>
             </div>
             <div class="card-body">
-                <form>
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="form_type" value="pagamento">
                     <div class="mb-3">
                         <div class="form-check form-switch">
-                            <input class="form-check-input" type="checkbox" id="dinheiro" checked>
-                            <label class="form-check-label" for="dinheiro">Dinheiro</label>
-                        </div>
-                        <div class="form-check form-switch">
-                            <input class="form-check-input" type="checkbox" id="cartaoCredito" checked>
-                            <label class="form-check-label" for="cartaoCredito">Cartão de Crédito</label>
-                        </div>
-                        <div class="form-check form-switch">
-                            <input class="form-check-input" type="checkbox" id="cartaoDebito" checked>
-                            <label class="form-check-label" for="cartaoDebito">Cartão de Débito</label>
-                        </div>
-                        <div class="form-check form-switch">
-                            <input class="form-check-input" type="checkbox" id="pix" checked>
+                            <input class="form-check-input" type="checkbox" id="pix" name="pix" {% if lanchonete.pix %}checked{% endif %}>
                             <label class="form-check-label" for="pix">PIX</label>
-                        </div>
-                        <div class="form-check form-switch">
-                            <input class="form-check-input" type="checkbox" id="valeRefeicao">
-                            <label class="form-check-label" for="valeRefeicao">Vale Refeição</label>
                         </div>
                     </div>
                     <div class="mb-3">
-                        <label for="chavePix" class="form-label">Chave PIX</label>
-                        <input type="text" class="form-control" id="chavePix" value="12345678901">
+                        <label for="chave_pix" class="form-label">Chave PIX</label>
+                        <input type="text" class="form-control" id="chave_pix" name="chave_pix" value="{{ lanchonete.chave_pix|default:'' }}" placeholder="Digite sua chave PIX">
+                        <div class="form-text">Pode ser CPF, CNPJ, e-mail, telefone ou chave aleatória</div>
                     </div>
                     <div class="d-grid">
                         <button type="submit" class="btn btn-primary">Salvar Formas de Pagamento</button>

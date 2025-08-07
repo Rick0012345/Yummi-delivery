@@ -102,31 +102,9 @@
                 <h5 class="mb-0"><i class="bi bi-credit-card me-2"></i>Formas de Pagamento</h5>
             </div>
             <div class="card-body">
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" {% if lanchonete.dinheiro %}checked{% endif %} disabled>
-                            <label class="form-check-label">Dinheiro</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" {% if lanchonete.cartao_credito %}checked{% endif %} disabled>
-                            <label class="form-check-label">Cartão de Crédito</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" {% if lanchonete.cartao_debito %}checked{% endif %} disabled>
-                            <label class="form-check-label">Cartão de Débito</label>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" {% if lanchonete.pix %}checked{% endif %} disabled>
-                            <label class="form-check-label">PIX</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" {% if lanchonete.vale_refeicao %}checked{% endif %} disabled>
-                            <label class="form-check-label">Vale Refeição</label>
-                        </div>
-                    </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" {% if lanchonete.pix %}checked{% endif %} disabled>
+                    <label class="form-check-label">PIX</label>
                 </div>
                 {% if lanchonete.chave_pix %}
                 <div class="mt-3">
@@ -306,31 +284,9 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Formas de Pagamento</label>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="dinheiro" name="dinheiro" {% if lanchonete.dinheiro %}checked{% endif %}>
-                                    <label class="form-check-label" for="dinheiro">Dinheiro</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="cartao_credito" name="cartao_credito" {% if lanchonete.cartao_credito %}checked{% endif %}>
-                                    <label class="form-check-label" for="cartao_credito">Cartão de Crédito</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="cartao_debito" name="cartao_debito" {% if lanchonete.cartao_debito %}checked{% endif %}>
-                                    <label class="form-check-label" for="cartao_debito">Cartão de Débito</label>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="pix" name="pix" {% if lanchonete.pix %}checked{% endif %}>
-                                    <label class="form-check-label" for="pix">PIX</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="vale_refeicao" name="vale_refeicao" {% if lanchonete.vale_refeicao %}checked{% endif %}>
-                                    <label class="form-check-label" for="vale_refeicao">Vale Refeição</label>
-                                </div>
-                            </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="pix" name="pix" {% if lanchonete.pix %}checked{% endif %}>
+                            <label class="form-check-label" for="pix">PIX</label>
                         </div>
                     </div>
                 </div>

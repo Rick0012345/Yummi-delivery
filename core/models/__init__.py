@@ -3,7 +3,6 @@ from .category import Category
 from .product import Product
 from .pedido import Pedido, PedidoItem
 from .lanchonete import Lanchonete
-from .configuracao import Configuracao
 
 __all__ = [
     'Cliente',
@@ -12,5 +11,4 @@ __all__ = [
     'Pedido',
     'PedidoItem',
     'Lanchonete',
-    'Configuracao',
 ]

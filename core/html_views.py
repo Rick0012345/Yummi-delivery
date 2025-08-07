@@ -282,9 +282,92 @@ def cozinha(request):
 
 @login_required
 def configuracoes(request):
+    # Verificar se há lanchonete selecionada
+    if 'lanchonete_id' not in request.session:
+        return redirect('selecionar_lanchonete')
+    
+    try:
+        lanchonete = Lanchonete.objects.get(id=request.session['lanchonete_id'])
+    except Lanchonete.DoesNotExist:
+        del request.session['lanchonete_id']
+        del request.session['lanchonete_nome']
+        return redirect('selecionar_lanchonete')
+    
+    if request.method == 'POST':
+        form_type = request.POST.get('form_type')
+        
+        if form_type == 'informacoes':
+            # Atualizar informações da lanchonete
+            lanchonete.nome = request.POST.get('nome')
+            lanchonete.cnpj = request.POST.get('cnpj')
+            lanchonete.telefone = request.POST.get('telefone')
+            lanchonete.email = request.POST.get('email')
+            lanchonete.endereco = request.POST.get('endereco')
+            lanchonete.numero = request.POST.get('numero', 'S/N')
+            lanchonete.bairro = request.POST.get('bairro')
+            lanchonete.cidade = request.POST.get('cidade')
+            lanchonete.estado = request.POST.get('estado')
+            lanchonete.cep = request.POST.get('cep')
+            
+            # Logo (apenas se uma nova for enviada)
+            if request.FILES.get('logo'):
+                lanchonete.logo = request.FILES.get('logo')
+            
+            try:
+                lanchonete.save()
+                messages.success(request, 'Informações atualizadas com sucesso!')
+            except Exception as e:
+                messages.error(request, f'Erro ao atualizar informações: {str(e)}')
+        
+        elif form_type == 'entrega':
+            # Atualizar configurações de entrega
+            lanchonete.taxa_entrega = request.POST.get('taxa_entrega', 0)
+            lanchonete.tempo_estimado = request.POST.get('tempo_estimado', 30)
+            lanchonete.raio_entrega = request.POST.get('raio_entrega', 5)
+            
+            # Dias de funcionamento
+            dias_selecionados = []
+            dias_semana = ['segunda', 'terca', 'quarta', 'quinta', 'sexta', 'sabado', 'domingo']
+            for dia in dias_semana:
+                if request.POST.get(dia):
+                    dias_selecionados.append(dia)
+            lanchonete.dias_funcionamento = ','.join(dias_selecionados)
+            
+            # Horários
+            horario_abertura = request.POST.get('horario_abertura')
+            horario_fechamento = request.POST.get('horario_fechamento')
+            lanchonete.horario_abertura = horario_abertura if horario_abertura else None
+            lanchonete.horario_fechamento = horario_fechamento if horario_fechamento else None
+            
+            try:
+                lanchonete.save()
+                messages.success(request, 'Configurações de entrega atualizadas com sucesso!')
+            except Exception as e:
+                messages.error(request, f'Erro ao atualizar configurações: {str(e)}')
+        
+        elif form_type == 'pagamento':
+            # Atualizar formas de pagamento
+            lanchonete.pix = request.POST.get('pix') == 'on'
+            lanchonete.chave_pix = request.POST.get('chave_pix', '')
+            
+            try:
+                lanchonete.save()
+                messages.success(request, 'Formas de pagamento atualizadas com sucesso!')
+            except Exception as e:
+                messages.error(request, f'Erro ao atualizar formas de pagamento: {str(e)}')
+        
+        return redirect('configuracoes')
+    
+    # Processar dias de funcionamento para exibição
+    dias_funcionamento = []
+    if lanchonete.dias_funcionamento:
+        dias_funcionamento = lanchonete.dias_funcionamento.split(',')
+    
     context = {
         'title': 'Configurações',
         'active': 'configuracoes',
+        'lanchonete': lanchonete,
+        'dias_funcionamento': dias_funcionamento,
     }
     return render(request, 'core/configuracoes.html', context)
 
@@ -322,11 +405,7 @@ def add_lanchonete(request):
         logo = request.FILES.get('logo')
         
         # Opções de pagamento
-        dinheiro = request.POST.get('dinheiro') == 'on'
-        cartao_credito = request.POST.get('cartao_credito') == 'on'
-        cartao_debito = request.POST.get('cartao_debito') == 'on'
         pix = request.POST.get('pix') == 'on'
-        vale_refeicao = request.POST.get('vale_refeicao') == 'on'
         
         try:
             Lanchonete.objects.create(
@@ -348,11 +427,7 @@ def add_lanchonete(request):
                 horario_fechamento=horario_fechamento if horario_fechamento else None,
                 chave_pix=chave_pix,
                 logo=logo,
-                dinheiro=dinheiro,
-                cartao_credito=cartao_credito,
-                cartao_debito=cartao_debito,
                 pix=pix,
-                vale_refeicao=vale_refeicao,
             )
             messages.success(request, f'Lanchonete "{nome}" cadastrada com sucesso!')
             # Se veio da tela de seleção, redireciona para lá
@@ -388,11 +463,7 @@ def edit_lanchonete(request, lanchonete_id):
         lanchonete.chave_pix = request.POST.get('chave_pix')
         
         # Opções de pagamento
-        lanchonete.dinheiro = request.POST.get('dinheiro') == 'on'
-        lanchonete.cartao_credito = request.POST.get('cartao_credito') == 'on'
-        lanchonete.cartao_debito = request.POST.get('cartao_debito') == 'on'
         lanchonete.pix = request.POST.get('pix') == 'on'
-        lanchonete.vale_refeicao = request.POST.get('vale_refeicao') == 'on'
         
         # Logo (apenas se uma nova for enviada)
         if request.FILES.get('logo'):
