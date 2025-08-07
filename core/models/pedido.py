@@ -1,7 +1,6 @@
 from django.db import models
 
-
-class Pedido(models.Model):
+class BasePedido(models.Model):
     STATUS_CHOICES = [
         ('pendente', 'Pendente'),
         ('preparando', 'Preparando'),
@@ -9,26 +8,26 @@ class Pedido(models.Model):
         ('entregue', 'Entregue'),
         ('cancelado', 'Cancelado'),
     ]
-    
-    TIPO_ENTREGA_CHOICES = [
-        ('balcao', 'Balcão'),
-        ('delivery', 'Delivery'),
-        ('mesa', 'Mesa')
-    ]
-    
+
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pendente')
+    observacao = models.TextField(blank=True, default='')
+
+
+class Pedido(BasePedido):
     lanchonete = models.ForeignKey('Lanchonete', on_delete=models.CASCADE, related_name='pedidos', null=True, blank=True)
     cliente = models.ForeignKey('Cliente', on_delete=models.CASCADE)
     data_hora = models.DateTimeField(auto_now_add=True)
-    tipo_entrega = models.CharField(max_length=20, choices=TIPO_ENTREGA_CHOICES, default='balcao')
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pendente')
-    observacao = models.TextField(blank=True, default='')
-    taxa_entrega = models.DecimalField(max_digits=6, decimal_places=2, default=0)
     total = models.DecimalField(max_digits=8, decimal_places=2, default=0)
 
     class Meta:
         verbose_name = 'Pedido'
         verbose_name_plural = 'Pedidos'
         ordering = ['-data_hora']
+
+    @property
+    def taxa_entrega(self):
+        """Retorna a taxa de entrega da lanchonete"""
+        return self.lanchonete.taxa_entrega if self.lanchonete else 0
 
     def __str__(self):
         return f'Pedido #{self.id} - {self.cliente.nome}'
