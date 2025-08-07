@@ -1,6 +1,6 @@
 from django.contrib import admin
 from .models import (
-    Cliente, Category, Product, Pedido, PedidoItem, Configuracao
+    Cliente, Category, Product, Pedido, PedidoItem, Configuracao, Lanchonete
 )
 
 @admin.register(Cliente)
@@ -33,3 +33,9 @@ class PedidoItemAdmin(admin.ModelAdmin):
 @admin.register(Configuracao)
 class ConfiguracaoAdmin(admin.ModelAdmin):
     list_display = ('nome_lanchonete', 'telefone', 'cidade')
+
+@admin.register(Lanchonete)
+class LanchoneteAdmin(admin.ModelAdmin):
+    list_display = ('nome', 'cnpj', 'telefone', 'cidade', 'status', 'data_criacao')
+    search_fields = ('nome', 'cnpj', 'telefone')
+    list_filter = ('status', 'cidade', 'estado')
