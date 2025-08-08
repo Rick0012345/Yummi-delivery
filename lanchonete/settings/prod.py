@@ -1,6 +1,10 @@
 from .base import *
 from dotenv import load_dotenv
-load_dotenv()
+import os
+
+# Carregar variáveis de ambiente
+load_dotenv(os.path.join(BASE_DIR, '.env'))
+load_dotenv(os.path.join(BASE_DIR, 'dotenv', '.env'))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
@@ -15,7 +19,7 @@ ALLOWED_HOSTS = ['*']  # Simplificado para desenvolvimento
 CSRF_TRUSTED_ORIGINS = [
     'http://localhost:8000',
     'http://127.0.0.1:8000',
-    'https://lanchonete-frontend-production.up.railway.app',
+    'https://yummi-delivery-production.up.railway.app',
 ]
 
 # Configurar CORS para desenvolvimento/produção
@@ -23,7 +27,7 @@ CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
     'http://localhost:8000',
     'http://127.0.0.1:8000',
-    'https://lanchonete-frontend-production.up.railway.app',
+    'https://yummi-delivery-production.up.railway.app',
 ]
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_ALL_ORIGINS = True  # Simplificado para desenvolvimento
