@@ -57,28 +57,6 @@ CMD ["/bin/bash", "-c", "\
             sleep 2; \
         done && \
         echo \"Banco de dados está pronto!\"; \
-    fi && \
-    # Executar migrações
-    echo \"Executando migrações...\" && \
-    python manage.py migrate --noinput && \
-    # Coletar arquivos estáticos
-    echo \"Coletando arquivos estáticos...\" && \
-    python manage.py collectstatic --noinput && \
-    # Criar superusuário se as variáveis estiverem definidas
-    if [ -n \"$DJANGO_SUPERUSER_USERNAME\" ] && [ -n \"$DJANGO_SUPERUSER_EMAIL\" ] && [ -n \"$DJANGO_SUPERUSER_PASSWORD\" ]; then \
-        echo \"Criando superusuário...\" && \
-        python manage.py createsuperuser --noinput \
-            --username \"$DJANGO_SUPERUSER_USERNAME\" \
-            --email \"$DJANGO_SUPERUSER_EMAIL\" || true; \
-    fi && \
-    # Iniciar aplicação Django
-    echo \"Iniciando aplicação Django...\" && \
-    exec gunicorn lanchonete.wsgi:application \
-        --bind 0.0.0.0:${PORT:-8000} \
-        --workers 4 \
-        --worker-class sync \
-        --timeout 120 \
-        --keep-alive 2 \
-        --max-requests 1000 \
-        --max-requests-jitter 100 \
-"]
+    fi
+
+# O Railway usará o startCommand do railway.toml para inicializar a aplicação
