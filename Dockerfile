@@ -32,10 +32,10 @@ RUN pip install -r requirements.txt
 # Copiar o restante da aplicação
 COPY --chown=django:django . .
 
-# Criar diretórios para arquivos estáticos e mídia com permissões adequadas
-RUN mkdir -p /app/staticfiles /app/media && \
-    chown -R django:django /app/staticfiles /app/media && \
-    chmod -R 755 /app/staticfiles /app/media
+# Criar diretórios para arquivos estáticos, mídia e logs com permissões adequadas
+RUN mkdir -p /app/staticfiles /app/media /app/logs && \
+    chown -R django:django /app/staticfiles /app/media /app/logs && \
+    chmod -R 755 /app/staticfiles /app/media /app/logs
 
 # Mudar para o usuário não-root
 USER django

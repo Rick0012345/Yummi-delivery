@@ -6,17 +6,27 @@ load_dotenv()
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DJANGO_DEBUG', 'False').lower() in ('true', '1')
+DEBUG = os.environ.get('DJANGO_DEBUG', 'True').lower() in ('true', '1')
 
-# Configurar hosts para produção
-ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS', '').split(',')
+# Configurar hosts para desenvolvimento/produção
+ALLOWED_HOSTS = ['*']  # Simplificado para desenvolvimento
 
-# Configurar CSRF para produção
-CSRF_TRUSTED_ORIGINS = os.environ.get('DJANGO_CSRF_ORIGINS', '').split(',')
+# Configurar CSRF para desenvolvimento/produção
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:8000',
+    'http://127.0.0.1:8000',
+    'https://lanchonete-frontend-production.up.railway.app',
+]
 
-# Configurar CORS para produção
-CORS_ALLOWED_ORIGINS = os.environ.get('DJANGO_CORS_ORIGINS', '').split(',')
+# Configurar CORS para desenvolvimento/produção
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:3000',
+    'http://localhost:8000',
+    'http://127.0.0.1:8000',
+    'https://lanchonete-frontend-production.up.railway.app',
+]
 CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_ALL_ORIGINS = True  # Simplificado para desenvolvimento
 
 # Database para produção (PostgreSQL)
 DATABASES = {
@@ -48,12 +58,6 @@ LOGGING = {
         },
     },
     'handlers': {
-        'file': {
-            'level': 'INFO',
-            'class': 'logging.FileHandler',
-            'filename': '/app/logs/django.log',
-            'formatter': 'verbose',
-        },
         'console': {
             'level': 'INFO',
             'class': 'logging.StreamHandler',
@@ -61,59 +65,38 @@ LOGGING = {
         },
     },
     'root': {
-        'handlers': ['console', 'file'],
+        'handlers': ['console'],
         'level': 'INFO',
     },
     'loggers': {
         'django': {
-            'handlers': ['console', 'file'],
+            'handlers': ['console'],
             'level': 'INFO',
             'propagate': False,
         },
     },
 }
 
-# Configurações de email para produção
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = os.environ.get('EMAIL_HOST', 'smtp.gmail.com')
-EMAIL_PORT = int(os.environ.get('EMAIL_PORT', '587'))
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
-DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'noreply@lanchonete.com')
+# Configurações simplificadas para desenvolvimento/teste
 
-# Configurações de cache para produção (Redis recomendado)
+# Email backend simplificado (console para desenvolvimento)
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# Cache simplificado (local memory)
 CACHES = {
     'default': {
-        'BACKEND': 'django.core.cache.backends.redis.RedisCache',
-        'LOCATION': os.environ.get('REDIS_URL', 'redis://127.0.0.1:6379/1'),
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
     }
 }
 
-# Configurações de sessão para produção
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
+# Configurações de sessão simplificadas para desenvolvimento
+SESSION_COOKIE_SECURE = False  # Permite HTTP para desenvolvimento
+CSRF_COOKIE_SECURE = False     # Permite HTTP para desenvolvimento
 SESSION_COOKIE_HTTPONLY = True
 CSRF_COOKIE_HTTPONLY = True
 
-# Configurações de segurança para produção
-SECURE_SSL_REDIRECT = True
-SECURE_HSTS_SECONDS = 31536000  # 1 ano
-SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-SECURE_HSTS_PRELOAD = True
-SECURE_BROWSER_XSS_FILTER = True
-SECURE_CONTENT_TYPE_NOSNIFF = True
-X_FRAME_OPTIONS = 'DENY'
-
-# Configurações de arquivos estáticos para produção
+# Configurações de arquivos estáticos
 STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 ]
-
-# Configurações de segurança adicional
-SECURE_REFERRER_POLICY = 'strict-origin-when-cross-origin'
-
-# Configurações de tempo limite
-DATA_UPLOAD_MAX_MEMORY_SIZE = 10485760  # 10MB
-FILE_UPLOAD_MAX_MEMORY_SIZE = 10485760  # 10MB 
