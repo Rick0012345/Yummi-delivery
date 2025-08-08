@@ -4,8 +4,11 @@ from django.contrib import messages
 from .models import Category, Product, Cliente, Pedido, PedidoItem, Lanchonete
 from .serializers import CategorySerializer, ProductSerializer, ClienteSerializer, PedidoSerializer
 
-@login_required
 def index(request):
+    # Se o usuário não estiver autenticado, redirecionar para login
+    if not request.user.is_authenticated:
+        return redirect('login')
+    
     # Verificar se há lanchonete selecionada na sessão
     if 'lanchonete_id' not in request.session:
         return redirect('selecionar_lanchonete')

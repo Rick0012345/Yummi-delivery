@@ -2,7 +2,7 @@
 builder = "dockerfile"
 
 [deploy]
-startCommand = "python manage.py migrate --noinput && python manage.py collectstatic --noinput && gunicorn lanchonete.wsgi:application --bind 0.0.0.0:$PORT --workers 4 --worker-class sync --timeout 120"
+startCommand = "python manage.py migrate --noinput && python manage.py collectstatic --noinput && python manage.py setup_initial_data && gunicorn lanchonete.wsgi:application --bind 0.0.0.0:$PORT --workers 4 --worker-class sync --timeout 120"
 restartPolicyType = "on_failure"
 restartPolicyMaxRetries = 3
 
