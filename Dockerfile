@@ -74,7 +74,7 @@ CMD ["/bin/bash", "-c", "\
     # Iniciar aplicação Django
     echo \"Iniciando aplicação Django...\" && \
     exec gunicorn lanchonete.wsgi:application \
-        --bind 0.0.0.0:8000 \
+        --bind 0.0.0.0:${PORT:-8000} \
         --workers 4 \
         --worker-class sync \
         --timeout 120 \
