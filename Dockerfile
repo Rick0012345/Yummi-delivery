@@ -47,16 +47,4 @@ EXPOSE 8000
 HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
     CMD python manage.py check || exit 1
 
-# Script para iniciar a aplicação
-CMD ["/bin/bash", "-c", "\
-    # Aguardar banco de dados se as variáveis estiverem definidas
-    if [ -n \"$POSTGRES_HOST\" ] && [ -n \"$POSTGRES_PORT\" ]; then \
-        echo \"Aguardando banco de dados...\" && \
-        while ! pg_isready -h \"$POSTGRES_HOST\" -p \"$POSTGRES_PORT\" -U \"$POSTGRES_USER\" -d \"$POSTGRES_DB\" -q; do \
-            echo \"Banco de dados não está pronto. Aguardando...\" && \
-            sleep 2; \
-        done && \
-        echo \"Banco de dados está pronto!\"; \
-    fi
-
 # O Railway usará o startCommand do railway.toml para inicializar a aplicação

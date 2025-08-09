@@ -21,6 +21,14 @@ services:
     #   # - DJANGO_SETTINGS_MODULE=lanchonete.settings.dev
     #   # O PYTHONPATH já está definido no Dockerfile
     #   # - PYTHONPATH=/app
+    command: >
+      sh -c "while ! pg_isready -h db -p 5432; do
+               echo 'Aguardando banco de dados...'
+               sleep 2
+             done &&
+             python manage.py migrate &&
+             python manage.py collectstatic --noinput &&
+             python manage.py runserver 0.0.0.0:8000"
     depends_on:
       - db
     networks:
