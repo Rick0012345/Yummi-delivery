@@ -134,6 +134,10 @@ main {
   flex-shrink: 0;
 }
 
+.btn-sair {
+  margin-top: auto;
+  margin-bottom: auto;
+}
 /* Responsividade */
 @media (max-width: 767.98px) {
   .sidebar {
