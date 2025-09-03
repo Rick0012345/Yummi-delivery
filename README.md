@@ -1,6 +1,6 @@
-# Lanchonete Frontend
+# Yuumi Automação
 
-Este é o frontend do sistema de lanchonete desenvolvido em Django.
+Este é o frontend, Automação e banco de dados do sistema de lanchonete desenvolvido em Django, n8n e postgres respectivamente.
 
 ## Requisitos
 
